@@ -13,6 +13,7 @@ class SMBCtl():
             self.password,
             'client_machine',
             self.NetBIOS_name,
+            domain='cdb180',
             use_ntlm_v2=True
         )
         self.connection.connect(remote_host, remote_port, timeout=5)

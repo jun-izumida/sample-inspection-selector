@@ -1,7 +1,12 @@
 import { Box, Button, TextField } from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search';
 
-const Info = () => {
+interface InfoPropType {
+    lotInfo: any
+}
+
+const Info = ({lotInfo}: InfoPropType) => {
+    console.log(lotInfo)
     return (
         <Box
             component="form"
@@ -9,7 +14,7 @@ const Info = () => {
             noValidate
             autoComplete="off"
         >
-            <TextField label="リングQR" variant="outlined" sx={{ flex: 1}} size="small" />
+            <TextField label="リングQR" variant="outlined" sx={{ flex: 1}} size="small" value={lotInfo != null ? lotInfo["resname"] : ''} />
             <Button variant="contained" size="large">{<SearchIcon /> }</Button>
         </Box>
     )

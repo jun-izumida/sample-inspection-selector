@@ -15,7 +15,7 @@ const Transition = forwardRef(function Transition(
 
 const QRCodeDialog = () => {
     return (
-        <Dialog open={true}
+        <Dialog open={false}
             TransitionComponent={Transition}
             keepMounted
             aria-describedby="alert-dialog-slide-description"

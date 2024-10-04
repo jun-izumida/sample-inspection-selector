@@ -5,7 +5,7 @@ import { Tab, TabList, Tabs } from "@mui/joy";
 const Selection = () => {
     return (
         <Box>
-            {[1,2,3,4].map((v) => {
+            {[1,2,3].map((v) => {
                 return (
             <Box
                 component="form"
