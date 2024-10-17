@@ -6,3 +6,74 @@ body {
 #root {
 }
 
+.box-ring {
+  position: absolute;
+  width: 70%;
+  max-width: 400px;
+  aspect-ratio: 1/1;
+  left: 50%;
+  transform: translate(-50%);
+  border: 30px solid lightgray;
+  border-radius: 50%;
+
+}
+
+.box-ring div {
+  width: 25%;
+  aspect-ratio: 1/1;
+  position: absolute;
+  border: 1px solid lightgray
+}
+
+.box-ring .active {
+  background-color: greenyellow !important;
+}
+
+.box-ring .box-ring-0 {
+  width: 30%;
+  height: 8%;
+  top: 8%;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.box-ring .box-ring-1 {
+  top: 22%;
+  left: 22%;
+}
+
+.box-ring .box-ring-2 {
+  top: 22%;
+  right: 22%;
+}
+
+.box-ring .box-ring-3 {
+  bottom: 22%;
+  left: 22%;
+}
+
+.box-ring .box-ring-4 {
+  bottom: 22%;
+  right: 22%;
+}
+
+.submit-form {
+  height: 64px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  position: fixed;
+}
+
+.submit-form button {
+  background-color: lime;
+  color: black;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100px;
+}
+.submit-form button:hover {
+  background-color: greenyellow;
+}

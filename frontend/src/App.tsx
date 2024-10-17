@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Nav from './components/Nav'
 import { Container } from '@mui/material'
 import PickUp from './pages/Pickup/Index'
+import Peel from './pages/Peel/Index'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path={"/"} element={<div>a</div>} />
         <Route path={"/pickup"} element={<PickUp />} />
+        <Route path={"/peel"} element={<Peel />} />
       </Routes>
       </Container>
     </BrowserRouter>
