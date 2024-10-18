@@ -1,13 +1,15 @@
+import { ReactNode, useContext, useEffect, useState, useReducer } from 'react'
 import { Alert, Box } from "@mui/material"
 import Form from "./Form"
 import Info from "./Info"
 import Selection from "./Selection"
 import QRCodeDialog from "./QRCodeDialog"
 import { PICKUP_RESULT_PROCESS_CODE, WEBAPPLICATION_API_ENDPOINT, WEBAPPLICATION_API_URL_EPR } from "../../Settings"
-import { useEffect, useState } from "react"
 import { graphqlQuery } from "../../middleware/request"
 import { QUERY_SEARCH_LOT } from "../../gql/query"
 import SampleRings from "./SampleRings"
+import { PickUpContext, PickUpInitialState, PickUpReducer } from '../../store/pickup'
+import { Loading } from '../../components/Loading'
 
 // JAM-DEVELOP経由で取得
 // sudo mount -t cifs -o ro,user=agel,password= "//10.204.143.83/Data/Result" /mnt   
@@ -63,15 +65,40 @@ const rst_demo2 = [
 
 ]
 
+const PickUpAppProvider = ({ children }: { children?: ReactNode; }) => {
+  const [ pickupState, pickupDispatch ] = useReducer(PickUpReducer, PickUpInitialState)
+  return (
+    <PickUpContext.Provider value={{pickupState, pickupDispatch}}>{children}</PickUpContext.Provider>
+  )
+}
+
 const Index = () => {
+  return (
+    <PickUpAppProvider>
+      <App />
+    </PickUpAppProvider>
+  )
+}
+
+type AlertType = {
+  visible: boolean
+  type: any
+  message: string
+}
+
+const App = () => {
+  const { pickupState, pickupDispatch } = useContext(PickUpContext)
   const [operationResult, setOpreationResult] = useState<any>(null)
   const [rstFiles, setRstFiles] = useState<string[]>([])
   const [isSearched, setIsSearched] = useState<boolean>(false)
+  const [alert, setAlert] = useState<AlertType>({visible: false, type: "", message: ""})
   const [pickups, setPickups] = useState<{[key: string]: any}>([])
 
   const search_result = (searchText: string) => {
+    pickupDispatch({type: "setLoading", payload: true})
     graphqlQuery(QUERY_SEARCH_LOT, { lot: searchText },
       () => {
+        pickupDispatch({type: "setLoading", payload: false})
         //appDispatch({ type: "setLoading", payload: false})
       },
       (result: any) => {
@@ -90,8 +117,11 @@ const Index = () => {
           }
         }
           */
+
       },
       (error: any) => {
+        
+        setAlert({visible:true, type:"error", message:error["message"]})
         console.log(error)
       }
     )
@@ -145,18 +175,22 @@ const Index = () => {
 
   useEffect(() => {
   })
-
+  console.log(alert)
   return (
-    <Box>
-      <Form handleSearchResult={search_result} />
-      {isSearched && operationResult == null ? <Alert severity="warning">対象ロットが見つかりませんでした。</Alert> : null}
-      <Info lotInfo={operationResult} />
-      <hr />
-      <Selection />
-      <hr />
-      <SampleRings pickups={pickups} />
-      <QRCodeDialog />
-    </Box>
+    <>
+      <Box>
+        <Form handleSearchResult={search_result} />
+        {alert.visible ? <Alert severity={alert.type}>{alert.message}</Alert> : null}
+        {isSearched && operationResult == null ? <Alert severity="warning">対象ロットが見つかりませんでした。</Alert> : null}
+        <Info lotInfo={operationResult} />
+        <hr />
+        <Selection />
+        <hr />
+        <SampleRings pickups={pickups} />
+        <QRCodeDialog />
+      </Box>
+      {pickupState.isLoading ? <Loading /> : null}
+    </>
   )
 }
 export default Index
