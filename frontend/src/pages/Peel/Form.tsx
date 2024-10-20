@@ -1,7 +1,12 @@
 import { Box, Button, TextField } from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search';
+import { useContext } from "react";
+import { PeelContext } from "../../store/peel";
 
 const Form = () => {
+    const { peelState, peelDispatch } = useContext(PeelContext)
+
+    console.log(peelState)
     return (
         <Box
             component="form"

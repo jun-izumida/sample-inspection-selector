@@ -1,11 +1,18 @@
-import React, { useEffect, useRef } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
+import { Box } from '@mui/material';
 
-export default function InputDialog() {
+interface InputDialogProps {
+  children?: ReactNode
+  sx?: any
+  code?: string
+  onChanged?: (code: string | null, value: string) => void
+}
+export const InputDialog = ({children, sx, code, onChanged}:InputDialogProps ) => {
   const inputRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = React.useState(false);
 
@@ -29,12 +36,17 @@ export default function InputDialog() {
         }
       }, 100)
   })
-
   return (
     <React.Fragment>
+      {children != undefined ? 
+      <Box sx={sx} onClick={handleClickOpen}>
+        {children}
+      </Box>
+      :
       <Button variant="outlined" onClick={handleClickOpen}>
         読み取り
       </Button>
+      }
       <Dialog
         open={open}
         onClose={handleClose}
@@ -44,8 +56,10 @@ export default function InputDialog() {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries((formData as any).entries());
-            const email = formJson.email;
-            console.log(email);
+            if (onChanged != undefined) {
+              onChanged(code != undefined ? code : null, formJson.code)
+            }
+            console.log(formJson.code)
             handleClose();
           },
         }}

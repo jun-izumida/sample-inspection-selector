@@ -10,6 +10,7 @@ import { QUERY_SEARCH_LOT } from "../../gql/query"
 import SampleRings from "./SampleRings"
 import { PickUpContext, PickUpInitialState, PickUpReducer } from '../../store/pickup'
 import { Loading } from '../../components/Loading'
+import { Submit } from '../../components/Submit'
 
 // JAM-DEVELOP経由で取得
 // sudo mount -t cifs -o ro,user=agel,password= "//10.204.143.83/Data/Result" /mnt   
@@ -168,13 +169,19 @@ const App = () => {
         const randomItem = items.splice(randomIndex, 1)[0];
         temp_pickups[`stage-${stage}`].push(randomItem)
       })
-      console.log(pickups)
     });
-    setPickups(temp_pickups)
+    pickupDispatch({type:"setPickUpSamples", payload: temp_pickups})
+    //setPickups(temp_pickups)
+  }
+
+  const mutationPickup = (callback?:() => void) => {
+    if (callback != undefined) {
+      callback()
+    }
   }
 
   useEffect(() => {
-  })
+  }, [])
   console.log(alert)
   return (
     <>
@@ -186,9 +193,10 @@ const App = () => {
         <hr />
         <Selection />
         <hr />
-        <SampleRings pickups={pickups} />
+        <SampleRings />
         <QRCodeDialog />
       </Box>
+      <Submit handleSubmit={mutationPickup} />
       {pickupState.isLoading ? <Loading /> : null}
     </>
   )
