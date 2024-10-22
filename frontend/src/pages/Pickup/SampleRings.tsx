@@ -20,6 +20,8 @@ const SampleRings = ({pickups}:SampleRingsType) => {
             <AccordionDetails>
                 <Grid container spacing={2}>
                 {Object.keys(pickups).map((v:any, i:number) => {
+                    console.log(pickups)
+                    console.log(pickups[v])
                     return (
                         <Grid item xs={12} md={4}>
                         <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
@@ -29,7 +31,7 @@ const SampleRings = ({pickups}:SampleRingsType) => {
                             {pickups[v].map((p:any, i:number) => {
                                 return (
                                  <ListItem key={i}>
-                                    <ListItemText primary={p.dmLot} />
+                                    <ListItemText primary={p.dmCode} />
                                 </ListItem>
                             )
                             })
