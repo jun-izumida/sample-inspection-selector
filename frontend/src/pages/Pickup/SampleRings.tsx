@@ -12,17 +12,6 @@ const SampleRings = ({ }: SampleRingsType) => {
     const { pickupState, pickupDispatch } = useContext(PickUpContext)
 
     useEffect(() => {
-        pickupDispatch({
-            type: "setPickUpSamples", payload: {
-                "1": [
-                    { "dmLot": "a" }
-                ],
-                "2": [
-                    { "dmLot": "ab" },
-                    { "dmLot": "ab" }
-                ]
-            }
-        })
     }, [])
 
     return (
@@ -36,14 +25,14 @@ const SampleRings = ({ }: SampleRingsType) => {
             </AccordionSummary>
             <AccordionDetails>
                 <Grid container spacing={2}>
-                    {pickupState.pickUpSamples != null ? Object.keys(pickupState.pickUpSamples).map((v: any, i: number) => {
+                    {pickupState.pickUpPeelSamples != null ? Object.keys(pickupState.pickUpPeelSamples).map((v: any, i: number) => {
                         return (
                             <Grid item xs={12} sm={6} md={4}>
                                 <Card>
                                     <CardHeader sx={{py:1, background: 'lightblue'}} title={v} />
-                                    <CardContent sx={{ m: 0, p: 0 }}>
+                                    <CardContent sx={{ m: 0, p: "0 !important", minHeight: '112px' }}>
                                         <List>
-                                            {pickupState.pickUpSamples != null ? pickupState.pickUpSamples[v].map((p: any, i: number) => {
+                                            {pickupState.pickUpPeelSamples != null ? pickupState.pickUpPeelSamples[v].map((p: any, i: number) => {
                                                 return (
                                                     <ListItem key={i}>
                                                         <ListItemText primary={p.dmLot} />

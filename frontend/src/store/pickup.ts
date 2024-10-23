@@ -9,12 +9,14 @@ export type PickUpItemType = {
 export type PickUpState = {
     isLoading: boolean
     pickUpItem: PickUpItemType[],
+    pickUpPeelSamples: {[key: string]: any} | null
     pickUpSamples: {[key: string]: any} | null
 }
 
 export type PickUpAction =
     | { type: "setLoading", payload: boolean }
-    | { type: "setPickUpSamples", payload: {[key: string]: any} | null }
+    | { type: "setPickUpPeelSamples", payload: {[key: string]: any} | null }
+    | { type: "setPickUpSamples", payload: string[] | null }
     | { type: "setPickUpItem", payload: PickUpItemType[] }
     | { type: "updatePickUpItem", payload: PickUpItemType }
 
@@ -32,6 +34,9 @@ export const PickUpReducer = (state:PickUpState, action:PickUpAction) => {
             break
         case "setPickUpSamples":
             next.pickUpSamples = action.payload
+            break
+        case "setPickUpPeelSamples":
+            next.pickUpPeelSamples = action.payload
             break
         case "setPickUpItem":
             next.pickUpItem = action.payload
