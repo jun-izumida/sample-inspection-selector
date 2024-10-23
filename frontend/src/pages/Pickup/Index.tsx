@@ -5,8 +5,8 @@ import Info from "./Info"
 import Selection from "./Selection"
 import QRCodeDialog from "./QRCodeDialog"
 import { PICKUP_RESULT_PROCESS_CODE, WEBAPPLICATION_API_ENDPOINT, WEBAPPLICATION_API_URL_EPR } from "../../Settings"
-import { graphqlQuery } from "../../middleware/request"
-import { QUERY_SEARCH_LOT } from "../../gql/query"
+import { graphqlQuery, graphqlQueryTemp } from "../../middleware/request"
+import { QUERY_SEARCH_LOT, QUERY_SEARCH_RST } from "../../gql/query"
 import SampleRings from "./SampleRings"
 import { PickUpContext, PickUpInitialState, PickUpReducer } from '../../store/pickup'
 import { Loading } from '../../components/Loading'
@@ -94,6 +94,7 @@ const App = () => {
   const [isSearched, setIsSearched] = useState<boolean>(false)
   const [alert, setAlert] = useState<AlertType>({visible: false, type: "", message: ""})
   const [pickups, setPickups] = useState<{[key: string]: any}>([])
+  const [frames, setFrames] = useState<{[key: string]: any}>([])
 
   const search_result = (searchText: string) => {
     pickupDispatch({type: "setLoading", payload: true})
@@ -104,67 +105,43 @@ const App = () => {
       },
       (result: any) => {
         console.log(result)
-        pickup_peel(result.data.searchLot.stages, result.data.searchLot.trace, search_rst(rst_demo2))
-        /*
-        if (result.data.tokenAuthenticate != null && result.data.tokenAuthenticate.account != null) {
-          appDispatch({ type: "setAccount", payload: result.data.tokenAuthenticate.account })
-          if (result.data.tokenAuthenticate.account.isUpdateCoin) {
-              notifications.show({
-                style: {backgroundColor: '#ff33ff66', color: 'white'},
-                color: 'white',
-                title: 'ログインボーナス',
-                message: <Flex><Image style={{height: '24px', width: '24px'}} src={`${import.meta.env.VITE_APP_ASSET_BASE}/manabit_coin.png`} /><Box style={{color: 'black', fontWeight: 'bold'}}>まなびっとコインをゲットしました。</Box></Flex>,
-              })
-          }
-        }
-          */
-
+        search_rst(result.data.searchLot.result.resourcecd, result.data.searchLot.result.lot, result.data.searchLot.stages, result.data.searchLot.trace)
+        //pickup_peel(result.data.searchLot.stages, result.data.searchLot.trace, search_rst(result.data.searchLot.result.coatlot))
       },
       (error: any) => {
-        
         setAlert({visible:true, type:"error", message:error["message"]})
         console.log(error)
       }
     )
-
-    /*
-    fetch(`${WEBAPPLICATION_API_ENDPOINT}${WEBAPPLICATION_API_URL_EPR}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        lot: searchText
-      })
-    })
-      .then(response => response.json())
-      .then(data => {
-        setIsSearched(true)
-        const result = data.data.filter((v: any) => {
-          return v.proccd == PICKUP_RESULT_PROCESS_CODE
-        })
-        if (result.length == 0) {
-          return
-        }
-        setOpreationResult(result[0])
-        setRstFiles(rst_demo)
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-      */
   }
 
-  const search_rst = (v:string[]) => {
-    return v.map((v) => v.replace(/(?:\/mnt\/)?(.*?)-(\d+).*\.csv$/, "$1-$2"))
+
+  const search_rst = (resourcecd:string, lot:string, stages:number[], dm:any[]) => {
+    graphqlQueryTemp(QUERY_SEARCH_RST, { machineCode: resourcecd, prefix: `${lot.substring(0, 4)}_${lot.substring(4, 11)}` },
+      () => {
+        //appDispatch({ type: "setLoading", payload: false})
+      },
+      (result: any) => {
+        const files = result.data.searchFiles
+        const rsts = files.map((v:string) => v.replace(/(?:\/mnt\/)?(.*?)-(\d+).*\.csv$/, "$1-$2"))
+        console.log(rsts)
+        //search_rst(result.data.searchLot.result.resourcecd, result.data.searchLot.result.lot)
+        pickup_peel(stages, dm, rsts)
+      },
+      (error: any) => {
+        setAlert({visible:true, type:"error", message:error["message"]})
+        console.log(error)
+      }
+    )
+    /* return v.map((v) => v.replace(/(?:\/mnt\/)?(.*?)-(\d+).*\.csv$/, "$1-$2"))*/
   }
 
   const pickup_peel = (stages:number[], dm:any[], rst:string[]) => {
     const temp_pickups: { [key: string]: any } = {}
     stages.forEach(stage => {
       temp_pickups[`stage-${stage}`] = []
-      const items = dm.filter((v:any) => v.dmStage == stage && rst.includes(v.dmLot))
-      Array.from({ length: 2 }).forEach(() => {
+      const items = dm.filter((v:any) => v.dmStage == String(stage) && rst.includes(v.dmLot))
+      Array.from({ length: ( items.length > 2 ? 2 : items.length ) }).forEach(() => {
         const randomIndex = Math.floor(Math.random() * items.length);
         const randomItem = items.splice(randomIndex, 1)[0];
         temp_pickups[`stage-${stage}`].push(randomItem)
@@ -181,8 +158,12 @@ const App = () => {
   }
 
   useEffect(() => {
+    /*
+    setFrames(items)
+    setPickups(temp_pickups)
+    */
   }, [])
-  console.log(alert)
+
   return (
     <>
       <Box>

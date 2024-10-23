@@ -24,3 +24,8 @@ export const QUERY_SEARCH_LOT = gql`
     }
 `
 
+export const QUERY_SEARCH_RST = gql`
+    query ($machineCode:String!, $prefix:String!) {
+        searchFiles(machineCode:$machineCode, prefix:$prefix)
+    }
+`

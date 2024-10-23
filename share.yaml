@@ -1,0 +1,78 @@
+common:
+    username: agel
+    password: ""
+    share_name: data
+    search_path: /Result/
+resources:
+    "3021001":
+        address: 10.204.143.83
+        netbios: VIP1
+    "3021002":
+        address: 10.204.143.84
+        netbios: VIP2
+    "3021003":
+        address: 10.204.143.85
+        netbios: VIP3
+    "3021004":
+        address: 10.204.143.86
+        netbios: VIP4
+    "3021005":
+        address: 10.204.143.87
+        netbios: VIP5
+    "3021006":
+        address: 10.204.143.88
+        netbios: VIP6
+    "3021007":
+        address: 10.204.143.89
+        netbios: VIP7
+    "3021008":
+        address: 10.204.143.90
+        netbios: VIP8
+    "3021009":
+        address: 10.204.143.91
+        netbios: VIP9
+    "3021010":
+        address: 10.204.143.92
+        netbios: VIP10
+    "3021011":
+        address: 10.204.143.93
+        netbios: VIP11
+    "3021012":
+        address: 10.204.143.94
+        netbios: VIP12
+    "3021013":
+        address: 10.204.143.95
+        netbios: VIP13
+    "3021014":
+        address: 10.204.143.96
+        netbios: VIP14
+    "3021015":
+        address: 10.204.143.97
+        netbios: VIP15
+    "3021016":
+        address: 10.204.143.98
+        netbios: VIP16
+    "3021017":
+        address: 10.204.143.99
+        netbios: VIP17
+    "3021018":
+        address: 10.204.143.100
+        netbios: VIP18
+    "3021019":
+        address: 10.204.143.101
+        netbios: VIP19
+    "3021020":
+        address: 10.204.143.102
+        netbios: VIP20
+    "3021021":
+        address: 10.204.143.103
+        netbios: VIP21
+    "3021022":
+        address: 10.204.143.104
+        netbios: VIP22
+    "3021023":
+        address: 10.204.143.105
+        netbios: VIP23
+    "3021024":
+        address: 10.204.143.106
+        netbios: VIP24
