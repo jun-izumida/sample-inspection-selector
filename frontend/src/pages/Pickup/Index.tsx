@@ -5,7 +5,7 @@ import Info from "./Info"
 import Selection from "./Selection"
 import QRCodeDialog from "./QRCodeDialog"
 import { PICKUP_RESULT_PROCESS_CODE, WEBAPPLICATION_API_ENDPOINT, WEBAPPLICATION_API_URL_EPR } from "../../Settings"
-import { graphqlQuery, graphqlQueryTemp } from "../../middleware/request"
+import { graphqlMutation, graphqlQuery, graphqlQueryTemp } from "../../middleware/request"
 import { QUERY_SEARCH_LOT, QUERY_SEARCH_RST } from "../../gql/query"
 import SampleRings from "./SampleRings"
 import { PickUpContext, PickUpInitialState, PickUpReducer } from '../../store/pickup'
@@ -111,7 +111,7 @@ const App = () => {
       })
     });
     const remain = [...new Set(dm.filter((v:any) => rst.includes(v.dmLot) && !picked.includes(v.dmLot)).map((w:any) => w.dmLot))]
-    const sample = [remain[0], remain[parseInt(remain.length / 2)], remain[remain.length - 1]]
+    const sample = [remain[0], remain[Math.floor(remain.length / 2)], remain[remain.length - 1]]
     console.log(sample)
 
     pickupDispatch({type:"setPickUpItem", payload: sample.map((v:string, i:number) => {
@@ -125,6 +125,7 @@ const App = () => {
   }
 
   const mutationPickup = (callback?:() => void) => {
+    
     if (callback != undefined) {
       callback()
     }
@@ -134,7 +135,7 @@ const App = () => {
   }, [])
 
   return (
-    <>
+    <Box sx={{width: '100%', height: '100%', mb: '82px'}}>
       <Box>
         <Form handleSearchResult={search_result} />
         {alert.visible ? <Alert severity={alert.type}>{alert.message}</Alert> : null}
@@ -148,7 +149,7 @@ const App = () => {
       </Box>
       <Submit handleSubmit={mutationPickup} />
       {pickupState.isLoading ? <Loading /> : null}
-    </>
+    </Box>
   )
 }
 export default Index

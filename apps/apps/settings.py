@@ -95,6 +95,9 @@ DATABASES = {
     }
 }
 
+MONGODB = env('MONGODB')
+MONGODB_DATABASE = env('MONGODB_DATABASE')
+MONGODB_COLLECTION = env('MONGODB_COLLECTION')
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

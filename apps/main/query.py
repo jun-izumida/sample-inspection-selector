@@ -9,19 +9,9 @@ import random
 import io
 import requests
 import yaml
+from pymongo import MongoClient
 from .common import *
 from .types import *
-
-hosts = [
-    {
-        "address": "10.52.34.44",
-        "netbios": "sjp300aa001",
-        "username": "jun.izumida",
-        "password": "RB20dettP!",
-        "share_name": "data",
-        "search_path": "/"
-    }
-]
 
 @strawberry.type
 class Query:
@@ -95,3 +85,16 @@ class Query:
             trace=trace,
             stages=stages
         )
+
+    
+    @strawberry.field
+    def search_samples(self, lot:str) -> Optional[str]:
+        client = MongoClient(settings.MONGODB)
+        db = client[settings.MONGODB_DATABASE]
+        item = db.sample.find_one({lot: lot})
+        response = InspectionSample(
+            lot=item.lot,
+            crossSectionSamples=[],
+            peelSamples=[]
+        )
+        return None #response

@@ -23,6 +23,7 @@ export type PickUpAction =
 export const PickUpInitialState = {
     isLoading: false,
     pickUpItem: [],
+    pickUpPeelSamples: null,
     pickUpSamples: null,
 }
 

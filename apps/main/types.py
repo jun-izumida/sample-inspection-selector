@@ -47,3 +47,32 @@ class SearchLotType:
     result: Optional["ResultType"]
     trace: Optional[List["TraceType"]]
     stages: Optional[List[int]]
+
+@strawberry.input
+class CrossSectionSample:
+    lot: str
+
+    def to_dict(self):
+        return {'lot': self.lot}
+
+
+@strawberry.input
+class PeelSample:
+    stage: str
+    lots: List[str]
+
+    def to_dict(self):
+        return {'stage': self.stage, 'lots': self.lots}
+
+
+@strawberry.type
+class InspectionSample:
+    lot: str
+    crossSectionSamples: List[CrossSectionSample]
+    peelSamples: List[PeelSample]
+
+@strawberry.input
+class InspectionSampleInput:
+    lot: str
+    crossSectionSamples: List[CrossSectionSample]
+    peelSamples: List[PeelSample]
