@@ -1,6 +1,4 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { ReactNode, useContext, useEffect, useState, useReducer } from 'react'
 import './App.css'
 import './loading.scss'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
@@ -8,20 +6,29 @@ import Nav from './components/Nav'
 import { Container } from '@mui/material'
 import PickUp from './pages/Pickup/Index'
 import Peel from './pages/Peel/Index'
+import { AppContext, AppInitialState, AppReducer } from './store/app'
 
-function App() {
-  const [count, setCount] = useState(0)
+const AppProvider = ({ children }: { children?: ReactNode; }) => {
+  const [ appState, appDispatch ] = useReducer(AppReducer, AppInitialState)
+  return (
+    <AppContext.Provider value={{appState, appDispatch}}>{children}</AppContext.Provider>
+  )
+}
+
+const App = () => {
 
   return (
     <BrowserRouter basename="/">
-      <Nav />
-      <Container sx={{ mt: 2}}>
-      <Routes>
-        <Route path={"/"} element={<div></div>} />
-        <Route path={"/pickup"} element={<PickUp />} />
-        <Route path={"/peel"} element={<Peel />} />
-      </Routes>
-      </Container>
+      <AppProvider>
+        <Nav />
+        <Container sx={{ mt: 2}}>
+        <Routes>
+          <Route path={"/"} element={<div></div>} />
+          <Route path={"/pickup"} element={<PickUp />} />
+          <Route path={"/peel"} element={<Peel />} />
+        </Routes>
+        </Container>
+      </AppProvider>
     </BrowserRouter>
   )
 }

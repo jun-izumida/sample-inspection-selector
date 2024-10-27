@@ -1,7 +1,7 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search';
 import { Tab, TabList, Tabs } from "@mui/joy";
-import InputDialog from "./InputDialog";
+import { InputDialog } from "../../components/InputDialog";
 import { DEMO_FRAME } from "./Index";
 import { useState } from "react";
 

@@ -1,15 +1,17 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, List, ListItem, ListItemText, TextField, Typography } from "@mui/material"
+import { Accordion, AccordionDetails, AccordionSummary, Card, CardContent, CardHeader, Grid, List, ListItem, ListItemText } from "@mui/material"
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import SearchIcon from '@mui/icons-material/Search';
-import { Tab, TabList, Tabs } from "@mui/joy";
+import { useContext, useEffect } from "react";
+import { PickUpContext } from "../../store/pickup";
 
 interface SampleRingsType {
-    pickups: {[key: string]: any}
 }
 
-const SampleRings = ({pickups}:SampleRingsType) => {
+const SampleRings = ({ }: SampleRingsType) => {
+    const { pickupState } = useContext(PickUpContext)
+    useEffect(() => {
+    }, [])
     return (
-        <Accordion>
+        <Accordion sx={{ mx: 1 }}>
             <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="peel-panel-content"
@@ -19,31 +21,29 @@ const SampleRings = ({pickups}:SampleRingsType) => {
             </AccordionSummary>
             <AccordionDetails>
                 <Grid container spacing={2}>
-                {Object.keys(pickups).map((v:any, i:number) => {
-                    console.log(pickups)
-                    console.log(pickups[v])
-                    return (
-                        <Grid item xs={12} md={4}>
-                        <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
-                            {v}
-                        </Typography>
-                        <List>
-                            {pickups[v].map((p:any, i:number) => {
-                                return (
-                                 <ListItem key={i}>
-                                    <ListItemText primary={p.dmCode} />
-                                </ListItem>
-                            )
-                            })
-                        }
-                        </List>
-                    </Grid>
-                    )
-                    })}
+                    {pickupState.stages != null ? pickupState.stages.map((v: any, i: number) => {
+                        return (
+                            <Grid item xs={12} sm={6} md={4} key={i}>
+                                <Card>
+                                    <CardHeader sx={{py:1, background: 'lightblue'}} title={v} />
+                                    <CardContent sx={{ m: 0, p: "0 !important", minHeight: '112px' }}>
+                                        <List>
+                                            {pickupState.pickUpPeelSamples != null && pickupState.pickUpPeelSamples[v] != null ? pickupState.pickUpPeelSamples[v].map((p: any, i: number) => {
+                                                return (
+                                                    <ListItem key={i}>
+                                                        <ListItemText primary={p.dmLot} />
+                                                    </ListItem>
+                                                )
+                                            }) : null}
+                                        </List>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        )
+                    }) : null}
                 </Grid>
             </AccordionDetails>
-
-      </Accordion>
+        </Accordion>
     )
 }
 export default SampleRings

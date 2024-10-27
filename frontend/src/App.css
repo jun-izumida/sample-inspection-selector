@@ -65,7 +65,7 @@ body {
   position: fixed;
 }
 
-.submit-form button {
+.submit-form button.submit {
   background-color: lime;
   color: black;
   position: absolute;
