@@ -29,3 +29,25 @@ export const QUERY_SEARCH_RST = gql`
         searchFiles(machineCode:$machineCode, prefix:$prefix)
     }
 `
+
+export const QUERY_SEARCH_SAMPLES = gql`
+    query ($lot: String!) {
+        searchSamples(lot: $lot) {
+            lot
+            stages
+            crossSectionSamples {
+                lot
+            }
+            peelSamples {
+                stage
+                lots
+            }
+        }
+    }
+`
+
+export const MUTATION_PICKUP = gql`
+    mutation ($input: InspectionSampleInput!) {
+        updateInspectionSampleLots(input:$input)
+    }
+`

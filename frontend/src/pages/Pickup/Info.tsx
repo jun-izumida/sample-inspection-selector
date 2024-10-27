@@ -14,8 +14,6 @@ const Info = ({lotInfo}: InfoPropType) => {
             noValidate
             autoComplete="off"
         >
-            <TextField label="リングQR" variant="outlined" sx={{ flex: 1}} size="small" value={lotInfo != null ? lotInfo["resname"] : ''} />
-            <Button variant="contained" size="large">{<SearchIcon /> }</Button>
         </Box>
     )
 }

@@ -20,8 +20,9 @@ class Mutation:
 
         mongo_data = {
             'lot': input.lot,
-            'crossSectionSamples': [sample.to_dict() for sample in input.crossSectionSamples],
-            'peelSamples': [sample.to_dict() for sample in input.peelSamples],
+            'crossSectionSamples': [sample.to_dict() for sample in input.cross_section_samples],
+            'peelSamples': [sample.to_dict() for sample in input.peel_samples],
+            'stages': input.stages
         }
 
         result = db[settings.MONGODB_COLLECTION].replace_one({'lot': input.lot}, mongo_data, upsert=True)

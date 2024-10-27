@@ -16,10 +16,7 @@ const Selection = () => {
 
     const onChanged = (code: string | null, value: string) => {
         if (code != null) {
-            console.log(pickupState.pickUpItem)
-            console.log(code)
             const work:PickUpItemType[] = pickupState.pickUpItem.filter((v:PickUpItemType) => parseInt(code) == v.sequence)
-            console.log(work)
             work[0].validateItem = value
             pickupDispatch({type: "updatePickUpItem", payload: work[0]})
         }
@@ -29,7 +26,7 @@ const Selection = () => {
     useEffect(() => {
         pickupDispatch({type:"setPickUpItem", payload:demo})
     }, [])
-
+    
     return (
         <Box>
             {(pickupState.pickUpItem.length > 0 ? pickupState.pickUpItem : []).sort((a:PickUpItemType , b:PickUpItemType) => a.sequence - b.sequence).map((v:PickUpItemType, i:number) => {
@@ -43,7 +40,7 @@ const Selection = () => {
             >
                 <Box sx={{display: 'flex', flex:1}}>
                     <TextField label="フレーム" variant="outlined" sx={{ mr:1, flex: 1 }} size="small" focused value={v.selectItem} />
-                    <InputDialog code={String(v.sequence)} onChanged={onChanged} sx={{flex:1}}>
+                    <InputDialog code={String(v.sequence)} onChanged={onChanged} sx={{flex:1}} disabled={pickupState.isRegistered}>
                         <TextField label="リングQR" variant="outlined" fullWidth size="small" inputProps={{ readOnly: true }} focused value={v.validateItem} />
                     </InputDialog>
                 </Box>

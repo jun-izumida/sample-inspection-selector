@@ -10,14 +10,17 @@ interface InputDialogProps {
   children?: ReactNode
   sx?: any
   code?: string
+  disabled?: boolean
   onChanged?: (code: string | null, value: string) => void
 }
-export const InputDialog = ({children, sx, code, onChanged}:InputDialogProps ) => {
+export const InputDialog = ({children, sx, code, disabled, onChanged}:InputDialogProps ) => {
   const inputRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
-    setOpen(true);
+    if (disabled == undefined || !disabled) {
+      setOpen(true);
+    }
   };
 
   const handleClose = () => {

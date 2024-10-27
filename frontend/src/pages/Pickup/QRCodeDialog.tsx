@@ -1,8 +1,12 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Slide } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Slide, Typography } from "@mui/material"
 import { QRCodeSVG } from "qrcode.react"
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { TransitionProps } from '@mui/material/transitions';
 
+interface QRCodeDialogProps {
+    sx?: any
+    values?: string[]
+}
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -13,24 +17,52 @@ const Transition = forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const QRCodeDialog = () => {
+const QRCodeDialog = ({sx, values}: QRCodeDialogProps) => {
+    const [ isOpened, setIsOpened ] = useState(false)
+
+    const handleOpen = () => {
+        setIsOpened(true)
+    }
+
+    const handleClose = () => {
+        setIsOpened(false) 
+    }
+
+    useEffect(() => {
+
+    },[])
+
     return (
-        <Dialog open={false}
+        <>
+        <Box sx={sx}>
+            <Button variant="contained" onClick={handleOpen}>QR</Button>
+        </Box>
+        <Dialog open={isOpened}
             TransitionComponent={Transition}
+            maxWidth={"lg"}
             keepMounted
             aria-describedby="alert-dialog-slide-description"
         >
-            <DialogTitle>a</DialogTitle>
+            <DialogTitle>QR</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    <QRCodeSVG value={"https://www.google.com/"} />
+                    <Grid container spacing={4}>
+                        {values != undefined ? values.map((v:string, i:number) => {
+                            return (
+                                <Grid item xs={4} key={i}>
+                                    <QRCodeSVG value={v} />
+                                    <Typography>{v}</Typography>
+                                </Grid>
+                            )
+                        }): null}
+                    </Grid>
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => { }}>Close</Button>
-                <Button onClick={() => { }}>Close</Button>
+                <Button onClick={handleClose}>Close</Button>
             </DialogActions>
         </Dialog>
+        </>
     )
 }
 export default QRCodeDialog

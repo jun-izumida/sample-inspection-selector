@@ -88,13 +88,18 @@ class Query:
 
     
     @strawberry.field
-    def search_samples(self, lot:str) -> Optional[str]:
+    def search_samples(self, lot:str) -> Optional[InspectionSampleType]:
         client = MongoClient(settings.MONGODB)
         db = client[settings.MONGODB_DATABASE]
-        item = db.sample.find_one({lot: lot})
-        response = InspectionSample(
-            lot=item.lot,
-            crossSectionSamples=[],
-            peelSamples=[]
+        item = db[settings.MONGODB_COLLECTION].find_one({"lot": lot})
+
+        if item is None:
+            return None
+
+        response = InspectionSampleType(
+            lot=item["lot"],
+            stages=item["stages"],
+            cross_section_samples=list(map(lambda x: CrossSectionSample(lot=x["lot"]), item["crossSectionSamples"])),
+            peel_samples=list(map(lambda x: PeelSample(stage=x["stage"], lots=x["lots"]), item["peelSamples"])),
         )
-        return None #response
+        return response

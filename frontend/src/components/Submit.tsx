@@ -4,6 +4,7 @@ import Slide from '@mui/material/Slide';
 import { AppBar, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material"
 
 interface SubmitPropType {
+    children?: ReactNode
     dialogTitle?: string
     dialogContent?: ReactNode
     handleSubmit?: (callback?:() => void) => void
@@ -17,13 +18,14 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export const Submit = ({ dialogTitle, dialogContent, handleSubmit }: SubmitPropType) => {
+export const Submit = ({ children, dialogTitle, dialogContent, handleSubmit }: SubmitPropType) => {
     const [open, setOpen] = React.useState(false)
 
     const handleClickOpen = () => {
         setOpen(true);
     };
-
+    console.log("AA")
+    console.log(children)
     const handleConfirm = () => {
         if (handleSubmit != undefined) {
             handleSubmit(() => {
@@ -39,7 +41,11 @@ export const Submit = ({ dialogTitle, dialogContent, handleSubmit }: SubmitPropT
 
     return (
         <Box className="submit-form" sx={{ backgroundColor: 'primary.main' }}>
-            <Button variant="contained" onClick={handleClickOpen}>登録</Button>
+            {children != undefined ? 
+                children
+            :
+            <Button className="submit" variant="contained" onClick={handleClickOpen}>登録</Button>
+            }
             <Dialog
                 open={open}
                 TransitionComponent={Transition}
