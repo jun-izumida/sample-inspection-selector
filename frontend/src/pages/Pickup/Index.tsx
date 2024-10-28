@@ -54,15 +54,38 @@ const App = () => {
     const files = DEMO_SEARCH_FILES
     const rsts = files["searchFiles"].map((v:string) => v.replace(/(?:\/mnt\/)?(.*?)-(\d+).*\.csv$/, "$1-$2"))
     console.log(rsts)
+    pickupDispatch({type:"setResult", payload: lot["searchLot"].result})
     pickup_peel(lot["searchLot"].stages, lot["searchLot"].trace, rsts)
     pickupDispatch({type: "setLoading", payload: false})
   }
 
   const search = (searchText: string) => {
+    setAlert({visible:false, type:"error", message:``})
     pickupDispatch({type:"clear"})
-    pickupDispatch({type:"setLot", payload: searchText})
     pickupDispatch({type:"setLoading", payload: true})
-    graphqlQuery(QUERY_SEARCH_SAMPLES, { lot: searchText },
+
+    graphqlQuery(QUERY_SEARCH_LOT, { lot: searchText.replace("_", "") },
+      () => {
+      },
+      (result: any) => {
+        if (result.data.searchLot.result != null) {
+          pickupDispatch({type:"setResult", payload: result.data.searchLot.result})
+          search_samples(result.data.searchLot.result)
+        } else {
+          pickupDispatch({type: "setLoading", payload: false})
+          setAlert({visible:true, type:"warning", message:`見つかりません。`})
+        }
+      },
+      (error: any) => {
+        pickupDispatch({type: "setLoading", payload: false})
+        setAlert({visible:true, type:"error", message:`[実績検索]: ${error["message"]}`})
+      }
+    )
+
+  }
+
+  const search_samples = (search_result:any) => {
+    graphqlQuery(QUERY_SEARCH_SAMPLES, { lot: search_result.lot },
       () => {
       },
       (result: any) => {
@@ -71,28 +94,12 @@ const App = () => {
           pickupDispatch({type: "setLoading", payload: false})
         } else {
           search_demo()
-          //search_result(searchText)
+          //search_rst(result.result.resourcecd, result.result.lot, result.stages, result.trace)
         }
-      },
+      },  
       (error: any) => {
         pickupDispatch({type: "setLoading", payload: false})
-        setAlert({visible:true, type:"error", message:error["message"]})
-      }
-    )
-  }
-
-  const search_result = (searchText: string) => {
-    pickupDispatch({type: "setLoading", payload: true})
-    graphqlQuery(QUERY_SEARCH_LOT, { lot: searchText },
-      () => {
-      },
-      (result: any) => {
-        pickupDispatch({type:"setLot", payload: searchText})
-        search_rst(result.data.searchLot.result.resourcecd, result.data.searchLot.result.lot, result.data.searchLot.stages, result.data.searchLot.trace)
-      },
-      (error: any) => {
-        pickupDispatch({type: "setLoading", payload: false})
-        setAlert({visible:true, type:"error", message:error["message"]})
+        setAlert({visible:true, type:"error", message:`[検索]: ${error["message"]}`})
       }
     )
   }
@@ -109,7 +116,7 @@ const App = () => {
       },
       (error: any) => {
         pickupDispatch({type: "setLoading", payload: false})
-        setAlert({visible:true, type:"error", message:error["message"]})
+        setAlert({visible:true, type:"error", message:`[RST検索]: ${error["message"]}`})
       }
     )
   }
@@ -142,15 +149,23 @@ const App = () => {
 
   const mutationPickup = (callback?:() => void) => {
     pickupDispatch({type: "setLoading", payload: true})
+    console.log("EEEE")
     graphqlMutation(MUTATION_PICKUP, {
       "input": {
-        "lot": pickupState.lot,
+        "lot": pickupState.result.lot,
         "crossSectionSamples": pickupState.pickUpItem != null ? pickupState.pickUpItem.map((v:any) => { return {"lot": v.selectItem} }) : [],
         "peelSamples": (pickupState.pickUpPeelSamples != null ? Object.keys(pickupState.pickUpPeelSamples).map((k:string) => { 
           return {
             "stage": k, 
             "lots": pickupState.pickUpPeelSamples != null ? pickupState.pickUpPeelSamples[k].map((v:any) => {
-              return v.dmLot
+              return {
+                "dmCode": v.dmCode,
+                "dmLot": v.dmLot,
+                "dmStage": v.dmStage,
+                "dmSuffix": v.dmSuffix,
+                "ring": v.ring,
+                "sequence": v.sequence
+              }
             }) : []
           }
         }) : []),
@@ -183,7 +198,7 @@ const App = () => {
         <Form handleSearchResult={search} />
         {alert.visible ? <Alert severity={alert.type}>{alert.message}</Alert> : null}
         {isSearched && operationResult == null ? <Alert severity="warning">対象ロットが見つかりませんでした。</Alert> : null}
-        <Info lotInfo={operationResult} />
+        <Info />
         <hr />
         <Selection />
         <hr />

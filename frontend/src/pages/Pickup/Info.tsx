@@ -1,19 +1,12 @@
-import { Box, Button, TextField } from "@mui/material"
-import SearchIcon from '@mui/icons-material/Search';
+import { Box, Typography } from "@mui/material"
+import { useContext } from "react";
+import { PickUpContext } from "../../store/pickup";
 
-interface InfoPropType {
-    lotInfo: any
-}
-
-const Info = ({lotInfo}: InfoPropType) => {
-    console.log(lotInfo)
+const Info = () => {
+    const { pickupState } = useContext(PickUpContext)
     return (
-        <Box
-            component="form"
-            sx={{ '& > :not(style)': { m: 1, width: '25ch' }, display: 'flex', alignItems: 'center'}}
-            noValidate
-            autoComplete="off"
-        >
+        <Box sx={{width: '100%', textAlign: 'center'}}>
+            <Typography>{pickupState.result != null ? pickupState.result.resname : ''}</Typography>
         </Box>
     )
 }

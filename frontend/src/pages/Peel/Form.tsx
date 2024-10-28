@@ -1,12 +1,44 @@
 import { Box, Button, TextField } from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search';
-import { useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { PeelContext } from "../../store/peel";
 
-const Form = () => {
-    const { peelState, peelDispatch } = useContext(PeelContext)
+interface FormPropType {
+    handleSearchResult: (result: string) => void
+}
 
-    console.log(peelState)
+const Form = ({ handleSearchResult }:FormPropType ) => {
+    const { peelState, peelDispatch } = useContext(PeelContext)
+    const [ searchText, setSearchText] = useState("")
+    const inputRef = useRef<HTMLDivElement>(null)
+
+    const handleChangeSearchText = (e: any) => {
+        if (e.key == "Enter") {
+            e.preventDefault()
+            handleSearchResult(searchText)
+        }
+    }
+
+    const handleSearch = () => {
+        handleSearchResult(searchText)
+    }
+
+
+    useEffect(() => {
+        setSearchText("")
+        setTimeout(() => {
+            if (inputRef != null && inputRef.current != null) {
+                if (inputRef.current.querySelector('input[name="qr"]') != null) {
+                    const elem: HTMLElement | null = inputRef.current.querySelector('input[name="qr"]')
+                    if (elem != null) {
+                        console.log(elem)
+                        elem.focus()
+                    }
+                }
+            }
+        }, 100)
+    }, [peelState.timestamp])
+
     return (
         <Box
             component="form"
@@ -14,8 +46,8 @@ const Form = () => {
             noValidate
             autoComplete="off"
         >
-            <TextField label="リングQR" variant="outlined" sx={{ flex: 1}} size="small" />
-            <Button variant="contained" size="large">{<SearchIcon /> }</Button>
+            <TextField ref={inputRef} label="リングQR" name="qr" variant="outlined" sx={{ flex: 1 }} size="small" value={searchText} onChange={(e) => setSearchText(e.target.value)} onKeyDown={handleChangeSearchText} />
+            <Button variant="contained" size="large" onClick={() => handleSearch()}>{<SearchIcon />}</Button>
         </Box>
     )
 }

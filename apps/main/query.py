@@ -39,7 +39,7 @@ class Query:
 
     @strawberry.field
     def search_lot(self, lot:str) -> SearchLotType:
-        r = requests.get(f"{settings.EXTERNAL_API_ENDPOINT}{settings.EXTERNAL_API_URL_EPR}", params={"lot": lot})
+        r = requests.get(f"{settings.EXTERNAL_API_ENDPOINT}{settings.EXTERNAL_API_URL_EPR}", params={"lot": lot, "is_ring_lot": 1})
         data = r.json()["data"]
         #result = list(filter(lambda x: x["proccd"] == "CBF320500", data))
         result = list(filter(lambda x: x["proccd"] == "CBF320100", data))
@@ -96,10 +96,19 @@ class Query:
         if item is None:
             return None
 
+        print(item)
         response = InspectionSampleType(
             lot=item["lot"],
             stages=item["stages"],
             cross_section_samples=list(map(lambda x: CrossSectionSample(lot=x["lot"]), item["crossSectionSamples"])),
-            peel_samples=list(map(lambda x: PeelSample(stage=x["stage"], lots=x["lots"]), item["peelSamples"])),
+            peel_samples=list(map(lambda x: PeelSample(stage=x["stage"], lots=list(map(lambda y: 
+            PeelSampleLot(
+                dm_lot = y["dm_lot"],
+                dm_code = y["dm_code"],
+                dm_stage = y["dm_stage"],
+                dm_suffix = y["dm_suffix"],
+                ring = y["ring"],
+                sequence = y["sequence"]
+            ),x["lots"]))), item["peelSamples"])),
         )
         return response

@@ -24,7 +24,7 @@ class Mutation:
             'peelSamples': [sample.to_dict() for sample in input.peel_samples],
             'stages': input.stages
         }
-
+        print(mongo_data)
         result = db[settings.MONGODB_COLLECTION].replace_one({'lot': input.lot}, mongo_data, upsert=True)
         print(result)
         return str(result.upserted_id)

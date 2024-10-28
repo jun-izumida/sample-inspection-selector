@@ -24,8 +24,7 @@ export const Submit = ({ children, dialogTitle, dialogContent, handleSubmit }: S
     const handleClickOpen = () => {
         setOpen(true);
     };
-    console.log("AA")
-    console.log(children)
+
     const handleConfirm = () => {
         if (handleSubmit != undefined) {
             handleSubmit(() => {

@@ -3,9 +3,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Tab, TabList, Tabs } from "@mui/joy";
 import { InputDialog } from "../../components/InputDialog";
 import { DEMO_FRAME } from "./Index";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { PeelContext } from "../../store/peel";
 
 const Selection = () => {
+    const { peelState, peelDispatch } = useContext(PeelContext)
+
     const [frame, setFrame] = useState(["", "", "", "", ""])
 
     const handleChange = (e: any, i: number) => {
@@ -14,35 +17,50 @@ const Selection = () => {
         setFrame([...next])
     }
 
+    const handleChangeActiveStage = (e:any) => {
+        peelDispatch({type:"setActiveStage", payload: e.target.attributes['attr-stage'].value })
+    }
 
     return (
         <Box>
-            {[1, 2, 3, 4, 5].map((v: number, i: number) => {
+            {peelState.stages.map((stage: number, i: number) => {
                 return (
                     <Box
+                        className={peelState.activeStage == stage ? 'active-stage' : ''}
                         key={i}
                         component="form"
                         sx={{ '& > :not(style)': { m: 1, width: '25ch' }, display: 'flex', alignItems: 'center' }}
                         noValidate
                         autoComplete="off"
+                        attr-stage={stage}
+                        onClick={handleChangeActiveStage}
                     >
-                        <Typography sx={{ maxWidth: '60px !important' }}>{`${v}段目`}</Typography>
+                        <Typography sx={{ maxWidth: '60px !important' }}>{`${stage}段目`}</Typography>
                         <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                             <InputLabel id="demo-select-small-label">Frame</InputLabel>
                             <Select
                                 labelId="frame-label"
                                 id="frame-label"
-                                value={frame[i]}
+                                value={""}
                                 label="frame"
                                 onChange={(e) => handleChange(e, i)}
                             >
-                                {DEMO_FRAME[i].map((w: string, j: number) => {
+                                {peelState.pickUpPeelSamples != null && peelState.pickUpPeelSamples.filter((v:any) => v.stage == String(stage)).length > 0 ?
+                                    peelState.pickUpPeelSamples.filter((v:any) => v.stage == String(stage))[0]["lots"].map((sample:any) => {
+                                        return (
+                                            <MenuItem value={sample.dmLot}>
+                                                <em>{`${sample.dmLot} - ${sample.sequence}`}</em>
+                                            </MenuItem>
+                                        )
+                                    })
+                                : null}
+                                {/*DEMO_FRAME[i].map((w: string, j: number) => {
                                     return (
                                         <MenuItem value={w}>
                                             <em>{w}</em>
                                         </MenuItem>
                                     )
-                                })}
+                                })*/}
                             </Select>
                         </FormControl>
                         <InputDialog />

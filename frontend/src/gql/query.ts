@@ -40,7 +40,14 @@ export const QUERY_SEARCH_SAMPLES = gql`
             }
             peelSamples {
                 stage
-                lots
+                lots {
+                    dmCode
+                    dmLot
+                    dmStage
+                    dmSuffix
+                    ring
+                    sequence
+                }
             }
         }
     }

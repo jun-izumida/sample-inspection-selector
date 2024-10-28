@@ -8,6 +8,9 @@ import QRCodeDialog from "./QRCodeDialog"
 import Ring from "./Ring"
 import { Submit } from "../../components/Submit"
 import { PeelContext, PeelInitialState, PeelReducer } from '../../store/peel'
+import { AppContext } from '../../store/app'
+import { graphqlQuery } from '../../middleware/request'
+import { QUERY_SEARCH_SAMPLES } from '../../gql/query'
 
 export const DEMO_FRAME = [
   ["frame-1-block3", "frame-13-block3"],
@@ -19,7 +22,6 @@ export const DEMO_FRAME = [
 
 const PeelAppProvider = ({ children }: { children?: ReactNode; }) => {
   const [ peelState, peelDispatch ] = useReducer(PeelReducer, PeelInitialState)
-
   return (
     <PeelContext.Provider value={{peelState, peelDispatch}}>{children}</PeelContext.Provider>
   )
@@ -34,15 +36,44 @@ const Index = () => {
 }
 
 const PeelApp = () => {
+  const { appState, appDispatch } = useContext(AppContext)
   const { peelState, peelDispatch } = useContext(PeelContext)
 
+  const search_samples = (search_text:any) => {
+    graphqlQuery(QUERY_SEARCH_SAMPLES, { lot: search_text },
+      () => {
+      },
+      (result: any) => {
+        if (result.data.searchSamples != null) {
+          peelDispatch({type:"setStages", payload: result.data.searchSamples.stages})
+          peelDispatch({type:"setPickUpPeelSamples", payload: result.data.searchSamples.peelSamples})
+          /*
+          pickupDispatch({type:"setSearchSamples", payload: result.data.searchSamples})
+          pickupDispatch({type: "setLoading", payload: false})
+          */
+        } else {
+          //search_demo()
+          //search_rst(result.result.resourcecd, result.result.lot, result.stages, result.trace)
+        }
+      },  
+      (error: any) => {
+        /*
+        pickupDispatch({type: "setLoading", payload: false})
+        setAlert({visible:true, type:"error", message:`[検索]: ${error["message"]}`})
+        */
+      }
+    )
+  }
+
   useEffect(() => {
-    peelDispatch({type: "SetStairs", payload: DEMO_FRAME})
+    appDispatch({type: "setTitle", payload: "Pickup"})
+
+    //peelDispatch({type: "SetStairs", payload: DEMO_FRAME})
   }, [])
 
   return (
       <Box sx={{position: 'relative'}}>
-        <Form />
+        <Form handleSearchResult={search_samples} />
         <hr />
         <Selection />
         <hr />

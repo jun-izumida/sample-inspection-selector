@@ -9,7 +9,7 @@ export type PickUpItemType = {
 export type PickUpState = {
     isLoading: boolean
     isRegistered: boolean
-    lot: string | null
+    result: any | null
     stages: number[] | null
     pickUpItem: PickUpItemType[]
     pickUpPeelSamples: {[key: string]: any} | null
@@ -20,7 +20,7 @@ export type PickUpState = {
 export type PickUpAction =
     | { type: "clear" }
     | { type: "setLoading", payload: boolean }
-    | { type: "setLot", payload: string }
+    | { type: "setResult", payload: any }
     | { type: "setStages", payload: number[] }
     | { type: "setPickUpPeelSamples", payload: {[key: string]: any} | null }
     | { type: "setPickUpSamples", payload: string[] | null }
@@ -33,7 +33,7 @@ export type PickUpAction =
 export const PickUpInitialState = {
     isLoading: false,
     isRegistered: false,
-    lot: null,
+    result: null,
     stages: null,
     pickUpItem: [],
     pickUpPeelSamples: null,
@@ -49,8 +49,8 @@ export const PickUpReducer = (state:PickUpState, action:PickUpAction) => {
         case "setLoading":
             next.isLoading = action.payload
             break
-        case "setLot":
-            next.lot = action.payload
+        case "setResult":
+            next.result = action.payload
             break
         case "setStages":
             next.stages = action.payload
@@ -66,7 +66,7 @@ export const PickUpReducer = (state:PickUpState, action:PickUpAction) => {
             break
         case "setSearchSamples":
             next.isRegistered = true
-            next.lot = action.payload.lot
+            next.result = action.payload.resulw
             next.stages = action.payload.stages
             next.pickUpItem = action.payload.crossSectionSamples.map((v:any, i:number) => {
                 return {
@@ -77,7 +77,7 @@ export const PickUpReducer = (state:PickUpState, action:PickUpAction) => {
             })
             const peel:{[key: string]: any} = {}
             action.payload.peelSamples.forEach((v: any) => {
-                peel[String(v["stage"])] = v["lots"].map((w:any) => { return {"dmLot": w}})
+                peel[String(v["stage"])] = v["lots"].map((w:any) => { return w})
             })
             next.pickUpPeelSamples = peel
             break

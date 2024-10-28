@@ -53,9 +53,18 @@ class CrossSectionSampleType:
     lot: str
 
 @strawberry.type
+class PeelSampleLotType:
+    dm_code: str
+    dm_lot: str
+    dm_stage: str
+    dm_suffix: str
+    ring: str
+    sequence: str
+
+@strawberry.type
 class PeelSampleType:
     stage: str
-    lots: List[str]
+    lots: List[PeelSampleLotType]
 
 @strawberry.type
 class InspectionSampleType:
@@ -71,11 +80,23 @@ class CrossSectionSample:
         return {'lot': self.lot}
 
 @strawberry.input
+class PeelSampleLot:
+    dm_code: str
+    dm_lot: str
+    dm_stage: str
+    dm_suffix: str
+    ring: str
+    sequence: str
+
+    def to_dict(self):
+        return {'dm_code': self.dm_code, 'dm_lot': self.dm_lot, "dm_stage": self.dm_stage, "dm_suffix": self.dm_suffix, "ring": self.ring, "sequence": self.sequence}
+
+@strawberry.input
 class PeelSample:
     stage: str
-    lots: List[str]
+    lots: List[PeelSampleLot]
     def to_dict(self):
-        return {'stage': self.stage, 'lots': self.lots}
+        return {'stage': self.stage, 'lots': [lot.to_dict() for lot in self.lots]}
 
 @strawberry.input
 class InspectionSampleInput:
