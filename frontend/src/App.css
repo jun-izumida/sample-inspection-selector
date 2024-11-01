@@ -12,7 +12,8 @@ body {
   max-width: 400px;
   aspect-ratio: 1/1;
   left: 50%;
-  transform: translate(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   border: 30px solid lightgray;
   border-radius: 50%;
 

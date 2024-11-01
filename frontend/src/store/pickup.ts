@@ -11,6 +11,7 @@ export type PickUpState = {
     isRegistered: boolean
     result: any | null
     stages: number[] | null
+    stageCount: any | null
     pickUpItem: PickUpItemType[]
     pickUpPeelSamples: {[key: string]: any} | null
     pickUpSamples: {[key: string]: any} | null
@@ -22,6 +23,7 @@ export type PickUpAction =
     | { type: "setLoading", payload: boolean }
     | { type: "setResult", payload: any }
     | { type: "setStages", payload: number[] }
+    | { type: "setStageCount", payload: any }
     | { type: "setPickUpPeelSamples", payload: {[key: string]: any} | null }
     | { type: "setPickUpSamples", payload: string[] | null }
     | { type: "setPickUpItem", payload: PickUpItemType[] }
@@ -35,6 +37,7 @@ export const PickUpInitialState = {
     isRegistered: false,
     result: null,
     stages: null,
+    stageCount: null,
     pickUpItem: [],
     pickUpPeelSamples: null,
     pickUpSamples: null,
@@ -54,6 +57,9 @@ export const PickUpReducer = (state:PickUpState, action:PickUpAction) => {
             break
         case "setStages":
             next.stages = action.payload
+            break
+        case "setStageCount":
+            next.stageCount = action.payload
             break
         case "setPickUpSamples":
             next.pickUpSamples = action.payload

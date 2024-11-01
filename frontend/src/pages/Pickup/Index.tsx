@@ -4,7 +4,6 @@ import Form from "./Form"
 import Info from "./Info"
 import Selection from "./Selection"
 import QRCodeDialog from "./QRCodeDialog"
-import { PICKUP_RESULT_PROCESS_CODE, WEBAPPLICATION_API_ENDPOINT, WEBAPPLICATION_API_URL_EPR } from "../../Settings"
 import { graphqlMutation, graphqlQuery, graphqlQueryTemp } from "../../middleware/request"
 import { MUTATION_PICKUP, QUERY_SEARCH_LOT, QUERY_SEARCH_RST, QUERY_SEARCH_SAMPLES } from "../../gql/query"
 import SampleRings from "./SampleRings"
@@ -13,7 +12,6 @@ import { Loading } from '../../components/Loading'
 import { Submit } from '../../components/Submit'
 import { DEMO_SEARCH_FILES, DEMO_SEARCH_LOT } from '../../demo'
 import { AppContext } from '../../store/app'
-import { useNavigate } from 'react-router-dom'
 
 // JAM-DEVELOP経由で取得
 // sudo mount -t cifs -o ro,user=agel,password= "//10.204.143.83/Data/Result" /mnt   
@@ -40,26 +38,24 @@ type AlertType = {
 }
 
 const App = () => {
-  const { appState, appDispatch } = useContext(AppContext)
+  const { appDispatch } = useContext(AppContext)
   const { pickupState, pickupDispatch } = useContext(PickUpContext)
-  const [operationResult, setOpreationResult] = useState<any>(null)
-  const [rstFiles, setRstFiles] = useState<string[]>([])
-  const [isSearched, setIsSearched] = useState<boolean>(false)
+  const [operationResult ] = useState<any>(null)
+  const [isSearched] = useState<boolean>(false)
   const [alert, setAlert] = useState<AlertType>({visible: false, type: "", message: ""})
-  const [pickups, setPickups] = useState<{[key: string]: any}>([])
-  const [frames, setFrames] = useState<{[key: string]: any}>([])
 
   const search_demo = () => {
     const lot = DEMO_SEARCH_LOT
     const files = DEMO_SEARCH_FILES
     const rsts = files["searchFiles"].map((v:string) => v.replace(/(?:\/mnt\/)?(.*?)-(\d+).*\.csv$/, "$1-$2"))
-    console.log(rsts)
     pickupDispatch({type:"setResult", payload: lot["searchLot"].result})
     pickup_peel(lot["searchLot"].stages, lot["searchLot"].trace, rsts)
     pickupDispatch({type: "setLoading", payload: false})
   }
 
   const search = (searchText: string) => {
+          search_demo()
+          return
     setAlert({visible:false, type:"error", message:``})
     pickupDispatch({type:"clear"})
     pickupDispatch({type:"setLoading", payload: true})
@@ -124,19 +120,32 @@ const App = () => {
   const pickup_peel = (stages:number[], dm:any[], rst:string[]) => {
     const picked: string[] = []
     const temp_pickups: { [key: string]: any } = {}
+    
     pickupDispatch({type: "setStages", payload: stages})
-    stages.forEach(stage => {
-      temp_pickups[`${String(stage)}`] = []
-      const items = dm.filter((v:any) => v.dmStage == String(stage) && rst.includes(v.dmLot) && !picked.includes(v.dmLot))
+
+    const rings = dm.filter((v:any) => rst.includes(v.dmLot) && !picked.includes(v.dmLot))
+    const stage_count = (stages.map((v:number) => { return {stage: v, count: rings.filter((w:any) => w.dmStage == String(v)).length}})).sort((a:any, b:any) => a.count - b.count);
+
+    stage_count.forEach(row => {
+      temp_pickups[`${String(row.stage)}`] = []
+      const items = rings.filter((v:any) => v.dmStage == String(row.stage) && rst.includes(v.dmLot) && !picked.includes(v.dmLot))
+
       Array.from({ length: ( items.length > 2 ? 2 : items.length ) }).forEach(() => {
-        const randomIndex = Math.floor(Math.random() * items.length);
-        const randomItem = items.splice(randomIndex, 1)[0];
+        var randomIndex = Math.floor(Math.random() * items.length);
+        var randomItem = items.splice(randomIndex, 1)[0];
+        while (picked.includes(randomItem.dmLot)) {
+          randomItem = items.splice(Math.floor(Math.random() * items.length), 1)[0];
+        }
         picked.push(randomItem.dmLot)
-        temp_pickups[`${String(stage)}`].push(randomItem)
+        temp_pickups[`${String(row.stage)}`].push(randomItem)
       })
+
     });
-    const remain = [...new Set(dm.filter((v:any) => rst.includes(v.dmLot) && !picked.includes(v.dmLot)).map((w:any) => w.dmLot))]
+
+    const remain = [...new Set(rings.filter((v:any) => rst.includes(v.dmLot) && !picked.includes(v.dmLot)).map((w:any) => w.dmLot))]
     const sample = [remain[0], remain[Math.floor(remain.length / 2)], remain[remain.length - 1]]
+
+    pickupDispatch({type:"setStageCount", payload: stage_count})
     pickupDispatch({type:"setPickUpItem", payload: sample.map((v:string, i:number) => {
       return {
         sequence: i,
@@ -149,7 +158,6 @@ const App = () => {
 
   const mutationPickup = (callback?:() => void) => {
     pickupDispatch({type: "setLoading", payload: true})
-    console.log("EEEE")
     graphqlMutation(MUTATION_PICKUP, {
       "input": {
         "lot": pickupState.result.lot,
@@ -181,7 +189,7 @@ const App = () => {
       pickupDispatch({type: "resetTimestamp"})
     },
     (error:any) => {
-
+      console.log(error)
     }) 
     if (callback != undefined) {
       callback()

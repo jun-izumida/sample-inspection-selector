@@ -1296,3 +1296,151 @@ export const DEMO_SEARCH_LOT =
     "__typename": "SearchLotType"
   }
 }
+
+export const DEMO_PEEL_SAMPLE = 
+{
+  "searchSamples": {
+    "lot": "CV4B62R4A18-1-7",
+    "stages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "crossSectionSamples": [
+      {
+        "lot": "CV4B_62R4A18-14",
+        "__typename": "CrossSectionSampleType"
+      },
+      {
+        "lot": "CV4B_62R4A18-24",
+        "__typename": "CrossSectionSampleType"
+      },
+      {
+        "lot": "CV4B_62R4A18-35",
+        "__typename": "CrossSectionSampleType"
+      }
+    ],
+    "peelSamples": [
+      {
+        "stage": "1",
+        "lots": [],
+        "__typename": "PeelSampleType"
+      },
+      {
+        "stage": "2",
+        "lots": [
+          {
+            "dmCode": "G42F24A24M2-12",
+            "dmLot": "CV4B_62R4A18-13",
+            "dmStage": "2",
+            "dmSuffix": "12",
+            "ring": "13",
+            "sequence": "2",
+            "__typename": "PeelSampleLotType"
+          },
+          {
+            "dmCode": "G42F24A24M2-16",
+            "dmLot": "CV4B_62R4A18-12",
+            "dmStage": "2",
+            "dmSuffix": "16",
+            "ring": "12",
+            "sequence": "1",
+            "__typename": "PeelSampleLotType"
+          }
+        ],
+        "__typename": "PeelSampleType"
+      },
+      {
+        "stage": "3",
+        "lots": [
+          {
+            "dmCode": "G42F24A24M3-18",
+            "dmLot": "CV4B_62R4A18-33",
+            "dmStage": "3",
+            "dmSuffix": "18",
+            "ring": "33",
+            "sequence": "2",
+            "__typename": "PeelSampleLotType"
+          }
+        ],
+        "__typename": "PeelSampleType"
+      },
+      {
+        "stage": "4",
+        "lots": [
+          {
+            "dmCode": "G42F24A24M4-11",
+            "dmLot": "CV4B_62R4A18-11",
+            "dmStage": "4",
+            "dmSuffix": "11",
+            "ring": "11",
+            "sequence": "4",
+            "__typename": "PeelSampleLotType"
+          },
+          {
+            "dmCode": "G42F24A24M4-07",
+            "dmLot": "CV4B_62R4A18-17",
+            "dmStage": "4",
+            "dmSuffix": "07",
+            "ring": "17",
+            "sequence": "1",
+            "__typename": "PeelSampleLotType"
+          }
+        ],
+        "__typename": "PeelSampleType"
+      },
+      {
+        "stage": "5",
+        "lots": [
+          {
+            "dmCode": "G42F24A24M5-14",
+            "dmLot": "CV4B_62R4A18-21",
+            "dmStage": "5",
+            "dmSuffix": "14",
+            "ring": "21",
+            "sequence": "2",
+            "__typename": "PeelSampleLotType"
+          },
+          {
+            "dmCode": "G42F24A24M5-32",
+            "dmLot": "CV4B_62R4A18-34",
+            "dmStage": "5",
+            "dmSuffix": "32",
+            "ring": "34",
+            "sequence": "4",
+            "__typename": "PeelSampleLotType"
+          }
+        ],
+        "__typename": "PeelSampleType"
+      },
+      {
+        "stage": "6",
+        "lots": [
+          {
+            "dmCode": "G42F24A24M6-37",
+            "dmLot": "CV4B_62R4A18-27",
+            "dmStage": "6",
+            "dmSuffix": "37",
+            "ring": "27",
+            "sequence": "3",
+            "__typename": "PeelSampleLotType"
+          },
+          {
+            "dmCode": "G42F24A24M6-20",
+            "dmLot": "CV4B_62R4A18-26",
+            "dmStage": "6",
+            "dmSuffix": "20",
+            "ring": "26",
+            "sequence": "3",
+            "__typename": "PeelSampleLotType"
+          }
+        ],
+        "__typename": "PeelSampleType"
+      }
+    ],
+    "__typename": "InspectionSampleType"
+  }
+}

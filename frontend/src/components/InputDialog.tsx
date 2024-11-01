@@ -8,12 +8,13 @@ import { Box } from '@mui/material';
 
 interface InputDialogProps {
   children?: ReactNode
+  isDisabled?: boolean
   sx?: any
   code?: string
   disabled?: boolean
   onChanged?: (code: string | null, value: string) => void
 }
-export const InputDialog = ({children, sx, code, disabled, onChanged}:InputDialogProps ) => {
+export const InputDialog = ({children, isDisabled, sx, code, disabled, onChanged}:InputDialogProps ) => {
   const inputRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = React.useState(false);
 
@@ -46,7 +47,7 @@ export const InputDialog = ({children, sx, code, disabled, onChanged}:InputDialo
         {children}
       </Box>
       :
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button variant="outlined" disabled={isDisabled != null ? isDisabled : false} onClick={handleClickOpen}>
         読み取り
       </Button>
       }

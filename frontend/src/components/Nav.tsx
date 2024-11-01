@@ -13,7 +13,7 @@ const Nav = () => {
         <AppBar position="static">
             <Toolbar>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    TEST - {appState.title}
+                    サンプル実績 - {appState.title}
                 </Typography>
             </Toolbar>
         </AppBar>

@@ -1,5 +1,5 @@
 import { ReactNode, useContext, useEffect, useReducer } from 'react'
-import { Box } from "@mui/material"
+import { Box, Grid } from "@mui/material"
 import Form from "./Form"
 import Info from "./Info"
 import Selection from "./Selection"
@@ -40,6 +40,7 @@ const PeelApp = () => {
   const { peelState, peelDispatch } = useContext(PeelContext)
 
   const search_samples = (search_text:any) => {
+    peelDispatch({type:"clear"})
     graphqlQuery(QUERY_SEARCH_SAMPLES, { lot: search_text },
       () => {
       },
@@ -75,9 +76,14 @@ const PeelApp = () => {
       <Box sx={{position: 'relative'}}>
         <Form handleSearchResult={search_samples} />
         <hr />
-        <Selection />
-        <hr />
-        <Ring />
+        <Grid container sx={{mt:4, minHeight: '300px'}}>
+          <Grid item xs={8} position={"relative"}>
+            <Selection />
+          </Grid>
+          <Grid item xs={4} position={"relative"}>
+            <Ring />
+          </Grid>
+        </Grid>
         <Submit />
       </Box>
   )

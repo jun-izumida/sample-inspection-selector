@@ -1,15 +1,8 @@
-import { Box, Button, TextField, Typography } from "@mui/material"
-import SearchIcon from '@mui/icons-material/Search';
+import { Box, TextField } from "@mui/material"
 import { Tab, TabList, Tabs } from "@mui/joy";
 import { InputDialog } from "../../components/InputDialog";
 import { useContext, useEffect } from "react";
 import { PickUpContext, PickUpItemType } from "../../store/pickup";
-
-const demo:PickUpItemType[] = [
-    {sequence:2, selectItem: "ABC", validateItem:null},
-    {sequence:1, selectItem: "DEF", validateItem:null}, 
-    {sequence:3, selectItem: "GHI", validateItem:null} 
-]
 
 const Selection = () => {
     const { pickupState, pickupDispatch } = useContext(PickUpContext)
@@ -24,7 +17,6 @@ const Selection = () => {
     }
 
     useEffect(() => {
-        pickupDispatch({type:"setPickUpItem", payload:demo})
     }, [])
     
     return (
