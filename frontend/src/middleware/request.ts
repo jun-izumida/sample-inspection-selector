@@ -16,6 +16,7 @@ export const graphqlQuery = (query: any, input: any, callback: any, successCallb
 }
 
 export const graphqlMutation = (query: any, input: any, callback: any, successCallback: any, errorCallback: any) => {
+  console.log("eddd")
   default_client.mutate({
     mutation: query,
     variables: input,

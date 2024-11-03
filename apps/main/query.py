@@ -88,15 +88,14 @@ class Query:
 
     
     @strawberry.field
-    def search_samples(self, lot:str) -> Optional[InspectionSampleType]:
+    def search_inspection_sample_request(self, lot:str) -> Optional[InspectionSampleType]:
         client = MongoClient(settings.MONGODB)
         db = client[settings.MONGODB_DATABASE]
-        item = db[settings.MONGODB_COLLECTION].find_one({"lot": lot})
+        item = db["inspection_sample_request"].find_one({"lot": lot})
 
         if item is None:
             return None
 
-        print(item)
         response = InspectionSampleType(
             lot=item["lot"],
             stages=item["stages"],
@@ -108,7 +107,38 @@ class Query:
                 dm_stage = y["dm_stage"],
                 dm_suffix = y["dm_suffix"],
                 ring = y["ring"],
-                sequence = y["sequence"]
+                sequence = y["sequence"],
+                is_use = y["is_use"],
+                is_validate = y["is_validate"],
+                is_pass = y["is_pass"],
+            ),x["lots"]))), item["peelSamples"])),
+        )
+        return response
+
+    @strawberry.field
+    def search_inspection_sample_result(self, lot:str) -> Optional[InspectionSampleType]:
+        client = MongoClient(settings.MONGODB)
+        db = client[settings.MONGODB_DATABASE]
+        item = db["inspection_sample_result"].find_one({"lot": lot})
+
+        if item is None:
+            return None
+
+        response = InspectionSampleType(
+            lot=item["lot"],
+            stages=item["stages"],
+            cross_section_samples=list(map(lambda x: CrossSectionSample(lot=x["lot"]), item["crossSectionSamples"])),
+            peel_samples=list(map(lambda x: PeelSample(stage=x["stage"], lots=list(map(lambda y: 
+            PeelSampleLot(
+                dm_lot = y["dm_lot"],
+                dm_code = y["dm_code"],
+                dm_stage = y["dm_stage"],
+                dm_suffix = y["dm_suffix"],
+                ring = y["ring"],
+                sequence = y["sequence"],
+                is_use = y["is_use"],
+                is_validate = y["is_validate"],
+                is_pass = y["is_pass"],
             ),x["lots"]))), item["peelSamples"])),
         )
         return response

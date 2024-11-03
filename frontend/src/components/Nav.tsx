@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Tooltip, Typography } from "@mui/material"
+import { AppBar, Toolbar, Typography } from "@mui/material"
 import { useContext, useEffect } from "react"
 import { AppContext } from "../store/app"
 

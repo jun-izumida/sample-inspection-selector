@@ -1,0 +1,13 @@
+services:
+  mongo:
+    image: ${MONGO_IMAGE}
+    container_name: sample_inspection_mongo_service_${CONTAINER_NAME_SUFFIX}
+    environment:
+      http_proxy: ''
+      https_proxy: ''
+    ports:
+      - ${MONGO_EXTERNAL_PORT}:27017
+    networks:
+      - app
+networks:
+  app:

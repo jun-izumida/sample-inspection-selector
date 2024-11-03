@@ -30,9 +30,9 @@ export const QUERY_SEARCH_RST = gql`
     }
 `
 
-export const QUERY_SEARCH_SAMPLES = gql`
+export const QUERY_SEARCH_REQUEST = gql`
     query ($lot: String!) {
-        searchSamples(lot: $lot) {
+        searchInspectionSampleRequest(lot: $lot) {
             lot
             stages
             crossSectionSamples {
@@ -52,9 +52,40 @@ export const QUERY_SEARCH_SAMPLES = gql`
         }
     }
 `
+export const QUERY_SEARCH_RESULT = gql`
+    query ($lot: String!) {
+        searchInspectionSampleResult(lot: $lot) {
+            lot
+            stages
+            crossSectionSamples {
+                lot
+            }
+            peelSamples {
+                stage
+                lots {
+                    dmCode
+                    dmLot
+                    dmStage
+                    dmSuffix
+                    ring
+                    sequence
+                    isUse
+                    isValidate
+                    isPass
+                }
+            }
+        }
+    }
+`
 
-export const MUTATION_PICKUP = gql`
+export const MUTATION_REQUEST = gql`
     mutation ($input: InspectionSampleInput!) {
-        updateInspectionSampleLots(input:$input)
+        updateInspectionSampleRequest(input:$input)
+    }
+`
+
+export const MUTATION_RESULT = gql`
+    mutation ($input: InspectionSampleInput!) {
+        updateInspectionSampleResult(input:$input)
     }
 `

@@ -60,6 +60,9 @@ class PeelSampleLotType:
     dm_suffix: str
     ring: str
     sequence: str
+    is_use: Optional[bool] = None
+    is_validate: Optional[bool] = None
+    is_pass: Optional[bool] = None
 
 @strawberry.type
 class PeelSampleType:
@@ -87,12 +90,23 @@ class PeelSampleLot:
     dm_suffix: str
     ring: str
     sequence: str
+    is_use: Optional[bool] = None
+    is_validate: Optional[bool] = None
+    is_pass: Optional[bool] = None
 
     def to_dict(self):
-        return {'dm_code': self.dm_code, 'dm_lot': self.dm_lot, "dm_stage": self.dm_stage, "dm_suffix": self.dm_suffix, "ring": self.ring, "sequence": self.sequence}
+        print(self.is_use)
+        return {'dm_code': self.dm_code, 'dm_lot': self.dm_lot, "dm_stage": self.dm_stage, "dm_suffix": self.dm_suffix, "ring": self.ring, "sequence": self.sequence, "is_use": self.is_use, "is_validate": self.is_validate, "is_pass": self.is_pass}
 
 @strawberry.input
 class PeelSample:
+    stage: str
+    lots: List[PeelSampleLot]
+    def to_dict(self):
+        return {'stage': self.stage, 'lots': [lot.to_dict() for lot in self.lots]}
+
+@strawberry.input
+class PeelSampleResult:
     stage: str
     lots: List[PeelSampleLot]
     def to_dict(self):
@@ -103,4 +117,11 @@ class InspectionSampleInput:
     lot: str
     cross_section_samples: List[CrossSectionSample]
     peel_samples: List[PeelSample]
+    stages: List[int]
+
+@strawberry.input
+class InspectionResultInput:
+    lot: str
+    cross_section_samples: List[CrossSectionSample]
+    peel_samples: List[PeelSampleResult]
     stages: List[int]

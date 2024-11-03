@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import { TransitionProps } from '@mui/material/transitions';
 import Slide from '@mui/material/Slide';
-import { AppBar, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material"
 
 interface SubmitPropType {
     children?: ReactNode
@@ -39,7 +39,7 @@ export const Submit = ({ children, dialogTitle, dialogContent, handleSubmit }: S
 
 
     return (
-        <Box className="submit-form" sx={{ backgroundColor: 'primary.main' }}>
+        <Box className="submit-form" sx={{ backgroundColor: 'primary.main', zIndex:2 }}>
             {children != undefined ? 
                 children
             :

@@ -23,7 +23,11 @@ body {
   width: 25%;
   aspect-ratio: 1/1;
   position: absolute;
-  border: 1px solid lightgray
+  border: 1px solid lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
 }
 
 .box-ring .active {
@@ -38,22 +42,22 @@ body {
   transform: translate(-50%);
 }
 
-.box-ring .box-ring-1 {
+.box-ring .box-ring-4 {
   top: 22%;
   left: 22%;
 }
 
-.box-ring .box-ring-2 {
+.box-ring .box-ring-3 {
   top: 22%;
   right: 22%;
 }
 
-.box-ring .box-ring-3 {
+.box-ring .box-ring-2 {
   bottom: 22%;
   left: 22%;
 }
 
-.box-ring .box-ring-4 {
+.box-ring .box-ring-1 {
   bottom: 22%;
   right: 22%;
 }

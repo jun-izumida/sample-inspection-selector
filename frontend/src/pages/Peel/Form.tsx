@@ -8,7 +8,7 @@ interface FormPropType {
 }
 
 const Form = ({ handleSearchResult }:FormPropType ) => {
-    const { peelState, peelDispatch } = useContext(PeelContext)
+    const { peelState } = useContext(PeelContext)
     const [ searchText, setSearchText] = useState("")
     const inputRef = useRef<HTMLDivElement>(null)
 
@@ -46,7 +46,7 @@ const Form = ({ handleSearchResult }:FormPropType ) => {
             noValidate
             autoComplete="off"
         >
-            <TextField ref={inputRef} label="リングQR" name="qr" variant="outlined" sx={{ flex: 1 }} size="small" value={searchText} onChange={(e) => setSearchText(e.target.value)} onKeyDown={handleChangeSearchText} />
+            <TextField ref={inputRef} label="製造ロットQR" placeholder="00AA00A0000-1-1" name="qr" variant="outlined" sx={{ flex: 1 }} size="small" value={searchText} onChange={(e) => setSearchText(e.target.value)} onKeyDown={handleChangeSearchText} />
             <Button variant="contained" size="large" onClick={() => handleSearch()}>{<SearchIcon />}</Button>
         </Box>
     )

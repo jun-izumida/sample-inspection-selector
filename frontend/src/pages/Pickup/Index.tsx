@@ -5,7 +5,7 @@ import Info from "./Info"
 import Selection from "./Selection"
 import QRCodeDialog from "./QRCodeDialog"
 import { graphqlMutation, graphqlQuery, graphqlQueryTemp } from "../../middleware/request"
-import { MUTATION_PICKUP, QUERY_SEARCH_LOT, QUERY_SEARCH_RST, QUERY_SEARCH_SAMPLES } from "../../gql/query"
+import { MUTATION_REQUEST, QUERY_SEARCH_LOT, QUERY_SEARCH_RST, QUERY_SEARCH_REQUEST } from "../../gql/query"
 import SampleRings from "./SampleRings"
 import { PickUpContext, PickUpInitialState, PickUpReducer } from '../../store/pickup'
 import { Loading } from '../../components/Loading'
@@ -81,7 +81,7 @@ const App = () => {
   }
 
   const search_samples = (search_result:any) => {
-    graphqlQuery(QUERY_SEARCH_SAMPLES, { lot: search_result.lot },
+    graphqlQuery(QUERY_SEARCH_REQUEST, { lot: search_result.lot },
       () => {
       },
       (result: any) => {
@@ -89,8 +89,10 @@ const App = () => {
           pickupDispatch({type:"setSearchSamples", payload: result.data.searchSamples})
           pickupDispatch({type: "setLoading", payload: false})
         } else {
-          search_demo()
-          //search_rst(result.result.resourcecd, result.result.lot, result.stages, result.trace)
+          /******/
+          /* search_demo() */
+          /******/
+          search_rst(result.result.resourcecd, result.result.lot, result.stages, result.trace)
         }
       },  
       (error: any) => {
@@ -158,7 +160,7 @@ const App = () => {
 
   const mutationPickup = (callback?:() => void) => {
     pickupDispatch({type: "setLoading", payload: true})
-    graphqlMutation(MUTATION_PICKUP, {
+    graphqlMutation(MUTATION_REQUEST, {
       "input": {
         "lot": pickupState.result.lot,
         "crossSectionSamples": pickupState.pickUpItem != null ? pickupState.pickUpItem.map((v:any) => { return {"lot": v.selectItem} }) : [],
@@ -197,7 +199,7 @@ const App = () => {
   }
 
   useEffect(() => {
-    appDispatch({type: "setTitle", payload: "Pickup"})
+    appDispatch({type: "setTitle", payload: "リング選定"})
   }, [])
 
   return (

@@ -11,6 +11,8 @@ export type StairType = {
 
 export type PeelState = {
     isLoading: boolean
+    isRegistered: boolean
+    lot: string | null
     stages: number[]
     activeStage: number | null
     activeSample: any | null
@@ -22,17 +24,18 @@ export type PeelState = {
 export type PeelAction =
     | { type: "clear" }
     | { type: "setLoading", payload: boolean }
-    | { type: "setStages", payload: number[] }
+    | { type: "setRegistered", payload: boolean }
+    | { type: "setSampleRequest", payload: any }
     | { type: "setActiveStage", payload: number }
     | { type: "setActiveSample", payload: any }
-    | { type: "setIsUse", payload: any }
-    | { type: "setPickUpPeelSamples", payload: {[key: string]: any} | null }
-    | { type: "SetStairs", payload: string[][] }
+    | { type: "changeStatus", payload: any }
     | { type: "resetTimestamp" }
 
 
 export const PeelInitialState = {
     isLoading: false,
+    isRegistered: false,
+    lot: null,
     stages: [],
     activeStage: null,
     activeSample: null,
@@ -41,35 +44,58 @@ export const PeelInitialState = {
     timestamp: new Date().getTime()
 }
 
-const GetStairs = (payload: string[][]): StairType[] | null => {
-    const stairs = payload.map((v:any) => {
-        return {
-            sequence: 1,
-            frames:[]
-        }
-    })
-    return stairs
-}
-
 export const PeelReducer = (state: PeelState, action:PeelAction) => {
     const next: PeelState = { ...state }
     switch (action.type) {
         case "clear":
             return PeelInitialState
+        case "setLoading":
+            next.isLoading = action.payload
             break
-        case "SetStairs":
-            next.stairs = GetStairs(action.payload)
+        case "setRegistered":
+            next.isRegistered = action.payload
             break
-        case "setStages":
-            next.stages = action.payload
+        case "setSampleRequest":
+            next.lot = action.payload["lot"]
+            next.stages = action.payload["stages"]
+            next.pickUpPeelSamples = action.payload["peelSamples"] != null ? action.payload["peelSamples"].map((v:any) => {
+                return {
+                    "stage": v.stage,
+                    "lots": v.lots.map((w:any) => {
+                        return {
+                            dmCode: w.dmCode,
+                            dmLot: w.dmLot,
+                            dmStage: w.dmStage,
+                            dmSuffix: w.dmSuffix,
+                            ring: w.ring,
+                            sequence: w.sequence,
+                            isUse: w.isUse == null ? false : w.isUse,
+                            isValidate: w.isValidate == null ? false : w.isValidate,
+                            isPass: w.isPass == null ? false : w.isPass,
+                        }
+                    })
+                }
+            }) : []
             break
-        case "setIsUse":
+        case "changeStatus":
             if (next.pickUpPeelSamples != null) {
                 const stage = next.pickUpPeelSamples.filter((v:any) => v.stage == action.payload["stage"])[0]
-                const target = stage["lots"].filter((v:any) => v.dmLot == action.payload["dmLot"] && v.sequence == action.payload["sequence"])[0]
-                target.isUse = action.payload["checked"]
+                const target = stage["lots"].filter((v:any) => v.dmCode == action.payload["dmCode"])[0]
+                switch (action.payload["field"]) {
+                    case "isUse":
+                        target.isUse = action.payload["value"]
+                        break
+                    case "isValidate":
+                        target.isValidate = action.payload["value"]
+                        break
+                    case "isPass":
+                        target.isPass = action.payload["value"]
+                        break
+                    default:
+                        break
+                }
                 const sample = [
-                    ...stage["lots"].filter((v:any) => v.dmLot != action.payload["dmLot"] && v.sequence != action.payload["sequence"]), target
+                    ...stage["lots"].filter((v:any) => v.dmCode != action.payload["dmCode"]), target
                 ]
                 stage["lots"] = sample
                 next.pickUpPeelSamples = [
@@ -83,19 +109,6 @@ export const PeelReducer = (state: PeelState, action:PeelAction) => {
             break
         case "setActiveSample":
             next.activeSample = action.payload
-            break
-        case "setPickUpPeelSamples":
-            next.pickUpPeelSamples = action.payload != null ? action.payload.map((v:any) => {
-                return {
-                    "stage": v.stage,
-                    "lots": v.lots.map((w:any) => {
-                        return {
-                            ...w,
-                            isUse: false
-                        }
-                    })
-                }
-            }) : []
             break
         case "resetTimestamp":
             next.timestamp = new Date().getTime();

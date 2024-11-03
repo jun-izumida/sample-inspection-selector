@@ -8,15 +8,12 @@ import strawberry_django
 from strawberry import auto
 from .types import *
 
-
-
 @strawberry.type
 class Mutation:
     @strawberry.mutation
-    def update_inspection_sample_lots(self, input: InspectionSampleInput) -> str:
+    def update_inspection_sample_request(self, input: InspectionSampleInput) -> str:
         client = MongoClient(settings.MONGODB)
         db = client[settings.MONGODB_DATABASE]
-        print(input.__dict__)
 
         mongo_data = {
             'lot': input.lot,
@@ -24,7 +21,19 @@ class Mutation:
             'peelSamples': [sample.to_dict() for sample in input.peel_samples],
             'stages': input.stages
         }
-        print(mongo_data)
-        result = db[settings.MONGODB_COLLECTION].replace_one({'lot': input.lot}, mongo_data, upsert=True)
-        print(result)
+        result = db["inspection_sample_request"].replace_one({'lot': input.lot}, mongo_data, upsert=True)
+        return str(result.upserted_id)
+
+    @strawberry.mutation
+    def update_inspection_sample_result(self, input: InspectionSampleInput) -> str:
+        client = MongoClient(settings.MONGODB)
+        db = client[settings.MONGODB_DATABASE]
+
+        mongo_data = {
+            'lot': input.lot,
+            'crossSectionSamples': [sample.to_dict() for sample in input.cross_section_samples],
+            'peelSamples': [sample.to_dict() for sample in input.peel_samples],
+            'stages': input.stages
+        }
+        result = db["inspection_sample_result"].replace_one({'lot': input.lot}, mongo_data, upsert=True)
         return str(result.upserted_id)
