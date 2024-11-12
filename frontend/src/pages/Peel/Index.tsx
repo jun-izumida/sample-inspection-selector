@@ -46,6 +46,7 @@ const PeelApp = () => {
   const [alert, setAlert] = useState<AlertType>({ visible: false, type: "", message: "" })
 
   const search_result = (search_text: any) => {
+    setAlert({ visible: false, type: "", message: "" })
     peelDispatch({ type: "clear" })
     peelDispatch({ type: "setLoading", payload: true })
     graphqlQuery(QUERY_SEARCH_RESULT, { lot: search_text },
@@ -74,7 +75,7 @@ const PeelApp = () => {
         peelDispatch({ type: "setLoading", payload: false })
       },
       (result: any) => {
-        if (result.data.searchSamples != null) {
+        if (result.data.searchInspectionSampleRequest != null) {
           peelDispatch({ type: "setSampleRequest", payload: result.data.searchInspectionSampleRequest })
         } else {
           //peelDispatch({ type: "setSampleRequest", payload: DEMO_PEEL_SAMPLE.searchSamples })
@@ -145,7 +146,8 @@ const PeelApp = () => {
             </Grid>
           </Grid>
         </Box>
-         : null}
+        : null
+        }
       </Submit>
       {peelState.isLoading ? <Loading /> : null}
     </Box>
