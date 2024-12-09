@@ -1,15 +1,16 @@
 import { ReactNode, useContext, useEffect, useReducer, useState } from 'react'
-import { Alert, Box, Button, Grid } from "@mui/material"
+import { Alert, Box, Grid } from "@mui/material"
 import Form from "./Form"
 import Selection from "./Selection"
 import Ring from "./Ring"
-import { Submit } from "../../components/Submit"
+import { Submit } from "./Submit"
 import { PeelContext, PeelInitialState, PeelReducer } from '../../store/peel'
 import { AppContext } from '../../store/app'
 import { graphqlMutation, graphqlQuery } from '../../middleware/request'
 import { MUTATION_RESULT, QUERY_SEARCH_RESULT, QUERY_SEARCH_REQUEST } from '../../gql/query'
 import { Loading } from '../../components/Loading'
 import { DEMO_PEEL_SAMPLE } from '../../demo'
+import { SubmitButton } from './SubmitButton'
 
 export const DEMO_FRAME = [
   ["frame-1-block3", "frame-13-block3"],
@@ -91,16 +92,59 @@ const PeelApp = () => {
   }
 
   const mutationPeel = (callback?:() => void) => {
+    if (peelState.pickUpPeelSamples) {
+      if (!peelState.pickUpPeelSamples.map((v:any) => v.lots.filter((w:any) => !w.isValidate && w.isUse).length).every((num:number) => num == 0)) {
+        setAlert({ visible: true, type: "error", message: "照合未完了のリングがあります。" })
+        peelDispatch({type: "setLoading", payload: false})
+        return
+      }
+      if (!peelState.pickUpPeelSamples.map((v:any) => v.lots.filter((w:any) => w.isValidate && w.isUse).length).every((num:number) => num > 0)) {
+        setAlert({ visible: true, type: "error", message: "すべての段のリングが選択されていません。" })
+        peelDispatch({type: "setLoading", payload: false})
+        return
+      }
+    }
     peelDispatch({type: "setLoading", payload: true})
     graphqlMutation(MUTATION_RESULT, {
       "input": {
         "lot": peelState.lot,
         "crossSectionSamples": [],
         "peelSamples": peelState.pickUpPeelSamples,
-        "stages": peelState.stages
-      }
+        "stages": peelState.stages,
+      },
+      isComplete: false
     },
     () => {
+      setAlert({ visible: false, type: "", message: "" })
+      peelDispatch({type: "clear"})
+      peelDispatch({type: "setLoading", payload: false})
+    },
+    (response:any) => {
+      console.log(response)
+      peelDispatch({type: "clear"})
+      peelDispatch({type: "resetTimestamp"})
+    },
+    (error:any) => {
+      console.log(error)
+    }) 
+    if (callback != undefined) {
+      callback()
+    }
+  }
+
+  const mutationPeelResult = (callback?:() => void) => {
+    peelDispatch({type: "setLoading", payload: true})
+    graphqlMutation(MUTATION_RESULT, {
+      "input": {
+        "lot": peelState.lot,
+        "crossSectionSamples": [],
+        "peelSamples": peelState.pickUpPeelSamples,
+        "stages": peelState.stages,
+      },
+      isComplete: true
+    },
+    () => {
+      setAlert({ visible: false, type: "", message: "" })
       peelDispatch({type: "setLoading", payload: false})
     },
     (response:any) => {
@@ -119,7 +163,7 @@ const PeelApp = () => {
   useEffect(() => {
     appDispatch({ type: "setTitle", payload: "ピール" })
   }, [])
-
+console.log(peelState)
   return (
     <Box sx={{ position: 'relative', minWidth: '1000px', mb: '82px' }}>
       <Form handleSearchResult={search_result} />
@@ -133,21 +177,35 @@ const PeelApp = () => {
           <Ring />
         </Grid>
       </Grid>
-      <Submit handleSubmit={mutationPeel}>
-        {peelState.isRegistered ? 
-        <Box sx={{height: '100%', width: '100%'}}>
-          <Grid container spacing={2}>
-            <Grid item xs={4}>
-            </Grid>
-            <Grid item xs={4}>
-              <Button className="submit" variant="contained" disabled sx={{backgroundColor: 'initial !important', color: 'white !important'}}>登録済み</Button>
-            </Grid>
-            <Grid item xs={4}>
-            </Grid>
+      <Submit>
+        <Grid container spacing={2} direction="row"
+          sx={{
+          marginTop: '-2px',
+          justifyContent: "center",
+          alignItems: "flex-start",
+        }}>
+          <Grid item xs={3}>
           </Grid>
-        </Box>
-        : null
-        }
+          <Grid item xs={3}>
+            {peelState.lot != null ?
+            <SubmitButton submitLabel={peelState.isRequest == null || peelState.isRequest ? '照合登録' : '照合登録済'} submitDisable={peelState.isRequest != null && !peelState.isRequest}
+              handleSubmit={mutationPeel}
+            />
+            :null}
+          </Grid>
+          <Grid item xs={3}>
+            {peelState.lot != null ?
+              peelState.isRequest != null && !peelState.isRequest && peelState.isComplete != null ?
+              <SubmitButton submitLabel={!peelState.isComplete ? '実績登録' : '実績登録済'} submitDisable={peelState.isComplete} 
+                handleSubmit={mutationPeelResult}
+              
+              />
+              :null
+            :null}
+          </Grid>
+          <Grid item xs={3}>
+          </Grid>
+        </Grid>
       </Submit>
       {peelState.isLoading ? <Loading /> : null}
     </Box>

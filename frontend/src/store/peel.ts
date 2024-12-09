@@ -12,6 +12,8 @@ export type StairType = {
 export type PeelState = {
     isLoading: boolean
     isRegistered: boolean
+    isRequest: boolean | null
+    isComplete: boolean | null
     lot: string | null
     stages: number[]
     activeStage: number | null
@@ -35,6 +37,8 @@ export type PeelAction =
 export const PeelInitialState = {
     isLoading: false,
     isRegistered: false,
+    isRequest: null,
+    isComplete: null,
     lot: null,
     stages: [],
     activeStage: null,
@@ -58,6 +62,8 @@ export const PeelReducer = (state: PeelState, action:PeelAction) => {
         case "setSampleRequest":
             next.lot = action.payload["lot"]
             next.stages = action.payload["stages"]
+            next.isRequest = action.payload["isRequest"]
+            next.isComplete = action.payload["isComplete"]
             next.pickUpPeelSamples = action.payload["peelSamples"] != null ? action.payload["peelSamples"].map((v:any) => {
                 return {
                     "stage": v.stage,
