@@ -49,6 +49,8 @@ export const QUERY_SEARCH_REQUEST = gql`
                     sequence
                 }
             }
+            isRequest
+            isComplete
         }
     }
 `
@@ -74,6 +76,8 @@ export const QUERY_SEARCH_RESULT = gql`
                     isPass
                 }
             }
+            isRequest
+            isComplete
         }
     }
 `
@@ -85,7 +89,7 @@ export const MUTATION_REQUEST = gql`
 `
 
 export const MUTATION_RESULT = gql`
-    mutation ($input: InspectionSampleInput!) {
-        updateInspectionSampleResult(input:$input)
+    mutation ($input: InspectionSampleInput!, $isComplete:Boolean) {
+        updateInspectionSampleResult(input:$input, isComplete: $isComplete)
     }
 `

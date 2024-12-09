@@ -1,7 +1,7 @@
 import datetime
 from django.conf import settings
 from django.db import transaction
-from typing import List, Union
+from typing import List, Union, Optional
 from pymongo import MongoClient
 import strawberry
 import strawberry_django
@@ -19,13 +19,15 @@ class Mutation:
             'lot': input.lot,
             'crossSectionSamples': [sample.to_dict() for sample in input.cross_section_samples],
             'peelSamples': [sample.to_dict() for sample in input.peel_samples],
-            'stages': input.stages
+            'stages': input.stages,
+            'is_request': True,
+            'is_complete': False
         }
         result = db["inspection_sample_request"].replace_one({'lot': input.lot}, mongo_data, upsert=True)
         return str(result.upserted_id)
 
     @strawberry.mutation
-    def update_inspection_sample_result(self, input: InspectionSampleInput) -> str:
+    def update_inspection_sample_result(self, input: InspectionSampleInput, is_complete: Optional[bool]) -> str:
         client = MongoClient(settings.MONGODB)
         db = client[settings.MONGODB_DATABASE]
 
@@ -33,7 +35,9 @@ class Mutation:
             'lot': input.lot,
             'crossSectionSamples': [sample.to_dict() for sample in input.cross_section_samples],
             'peelSamples': [sample.to_dict() for sample in input.peel_samples],
-            'stages': input.stages
+            'stages': input.stages,
+            'is_request': False,
+            'is_complete': is_complete if is_complete is None else False
         }
         result = db["inspection_sample_result"].replace_one({'lot': input.lot}, mongo_data, upsert=True)
         return str(result.upserted_id)

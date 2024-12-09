@@ -73,12 +73,16 @@ body {
 .submit-form button.submit {
   background-color: lime;
   color: black;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  cursor: pointer;
   min-width: 100px;
 }
+
+.submit-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .submit-form button:hover {
   background-color: greenyellow;
 }

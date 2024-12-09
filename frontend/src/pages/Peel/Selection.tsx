@@ -25,7 +25,7 @@ const Selection = () => {
     }
 
     const handlePassSample = (_: React.SyntheticEvent | null, newValue: string | number | null, stage: number, code: string | null) => {
-        if (code == null || newValue == null || peelState.isRegistered) return
+        if (code == null || newValue == null || peelState.isComplete) return
         peelDispatch({type:"changeStatus", payload:{"stage": stage, "dmCode": code, field: "isPass", "value": newValue == 1 ? true : false}})
     }
 
@@ -58,13 +58,13 @@ const Selection = () => {
                                                 <InputDialog code={`${stage}/${String(sample.dmLot)}/${String(sample.dmCode)}/${String(sample.sequence)}`} onChanged={handleValidateSample} sx={{flex:1}} isDisabled={!sample.isUse || peelState.isRegistered}>
                                                 </InputDialog>
                                                 <Box sx={{ height: '36px', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid lightgray', minWidth: '100px' }}>{sample.isValidate ? `照合OK` : `未照合`}</Box>
-                                                {sample.isUse && sample.isValidate ?
+                                                {!peelState.isRequest || peelState.isComplete ? sample.isUse && sample.isValidate ?
                                                 <Tabs aria-label="Basic tabs" value={sample.isPass ? 1 : 0} tabIndex={-1} onChange={(e, newValue) => { handlePassSample(e,  newValue, stage, sample.dmCode) }}>
                                                     <TabList disableUnderline>
                                                         <Tab sx={{ width: '100%' }} color={"danger"} tabIndex={-1} >NG</Tab>
                                                         <Tab sx={{ width: '100%' }} color={"success"} tabIndex={-1} >OK</Tab>
                                                     </TabList>
-                                                </Tabs> : null}
+                                                </Tabs> : null : null}
                                             </Box>
                                         )
                                     })

@@ -1,4 +1,4 @@
-import { default_client, temp_client } from "../middleware/graphql"
+import { default_client } from "../middleware/graphql"
 
 export const graphqlQuery = (query: any, input: any, callback: any, successCallback: any, errorCallback: any) => {
   default_client.query({
@@ -16,7 +16,6 @@ export const graphqlQuery = (query: any, input: any, callback: any, successCallb
 }
 
 export const graphqlMutation = (query: any, input: any, callback: any, successCallback: any, errorCallback: any) => {
-  console.log("eddd")
   default_client.mutate({
     mutation: query,
     variables: input,
@@ -32,7 +31,8 @@ export const graphqlMutation = (query: any, input: any, callback: any, successCa
 }
 
 export const graphqlQueryTemp = (query: any, input: any, callback: any, successCallback: any, errorCallback: any) => {
-  temp_client.query({
+  //temp_client.query({
+  default_client.query({
     fetchPolicy: 'network-only',
     query: query,
     variables: input

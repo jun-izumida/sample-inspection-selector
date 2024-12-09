@@ -75,6 +75,8 @@ class InspectionSampleType:
     cross_section_samples: Optional[List[CrossSectionSampleType]]
     peel_samples: Optional[List[PeelSampleType]]
     stages: Optional[List[int]]
+    is_request: Optional[bool]
+    is_complete: Optional[bool]
 
 @strawberry.input
 class CrossSectionSample:
