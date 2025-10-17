@@ -18,7 +18,7 @@ const AppProvider = ({ children }: { children?: ReactNode; }) => {
 const App = () => {
 
   return (
-    <BrowserRouter basename="/">
+    <BrowserRouter basename={import.meta.env.VITE_BASENAME as string}>
       <AppProvider>
         <Nav />
         <Container sx={{ mt: 2}}>
