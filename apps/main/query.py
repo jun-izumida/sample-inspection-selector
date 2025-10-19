@@ -9,6 +9,7 @@ import random
 import io
 import requests
 import yaml
+import re
 from pymongo import MongoClient
 from .common import *
 from .types import *

@@ -1,5 +1,5 @@
 services:
-  app:
+  sample_inspection_app:
     image: ${APP_IMAGE}
     container_name: sample_inspection_app_service_${CONTAINER_NAME_SUFFIX}
     #ports:
@@ -24,6 +24,10 @@ services:
       MONGODB_COLLECTION: ${MONGODB_COLLECTION}
       LOG_BASE_DIR: ${LOG_BASE_DIR}
       CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS}
+      EXTERNAL_API_ENDPOINT: ${EXTERNAL_API_ENDPOINT}
+      EXTERNAL_API_URL_EPR: ${EXTERNAL_API_URL_EPR}
+      EXTERNAL_API_URL_TRACE: ${EXTERNAL_API_URL_TRACE}
+      FILE_SEARCH_CONFIG: ${FILE_SEARCH_CONFIG}
     volumes:
       - ${DATA_VOLUME}:/data
       - ${APP_VOLUME}:/app
@@ -41,7 +45,7 @@ services:
     networks:
       - app
     restart: unless-stopped
-  nginx:
+  sample_inspection_app:
     image: ${NGINX_IMAGE}
     container_name: sample_inspection_web_service_${CONTAINER_NAME_SUFFIX}
     environment:
@@ -60,7 +64,7 @@ services:
       - "traefik.http.routers.${TRAEFIK_ROUTER}-frontend-${CONTAINER_NAME_SUFFIX}.entrypoints=${TRAEFIK_ENTRYPOINT}"
       #- "traefik.docker.network=${NETWORK}"
     depends_on:
-      - app
+      - sample_inspection_app
     networks:
       - app
     restart: unless-stopped

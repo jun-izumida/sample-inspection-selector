@@ -17,14 +17,14 @@ APP_VOLUME=../apps
 DATA_VOLUME=../data
 DATABASE_URL=postgres://user:pass@db:5432/manaby
 EXTERNAL_API_ENDPOINT=http://localhost:8000
-EXTERNAL_API_URL_EPR=/api/epr
+EXTERNAL_API_URL_EPR=/api/production/result/epr
 EXTERNAL_API_URL_TRACE=/api/monitor/trace
 FILE_SEARCH_CONFIG=/data/share.yaml
 MONGODB=mongodb://127.0.0.1:27017/
 MONGODB_DATABASE=test
 MONGODB_COLLECTION=sample
 
-SCRIPT_NAME=/app
+SCRIPT_NAME=/sample-inspection/app
 DEBUG=True
 SECRET_KEY=django-insecure-=#7b0sbub)rbo!*b3xnr_a$_@!&-vubc)8nkv=s%knweytqw98
 LANGUAGE_CODE=ja-jp
@@ -37,5 +37,3 @@ APPLICATION_PREFIX=
 LOG_BASE_DIR=/logs
 STATIC_ROOT=/staticfiles
 #DATABASE_URL=sqlite:///data.sqlite3
-
-

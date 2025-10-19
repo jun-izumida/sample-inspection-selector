@@ -10,7 +10,7 @@ import SampleRings from "./SampleRings"
 import { PickUpContext, PickUpInitialState, PickUpReducer } from '../../store/pickup'
 import { Loading } from '../../components/Loading'
 import { Submit } from '../../components/Submit'
-import { DEMO_SEARCH_FILES, DEMO_SEARCH_LOT } from '../../demo'
+//import { DEMO_SEARCH_FILES, DEMO_SEARCH_LOT } from '../../demo'
 import { AppContext } from '../../store/app'
 
 // JAM-DEVELOP経由で取得
@@ -43,7 +43,7 @@ const App = () => {
   const [operationResult ] = useState<any>(null)
   const [isSearched] = useState<boolean>(false)
   const [alert, setAlert] = useState<AlertType>({visible: false, type: "", message: ""})
-
+  /*
   const search_demo = () => {
     const lot = DEMO_SEARCH_LOT
     const files = DEMO_SEARCH_FILES
@@ -52,10 +52,11 @@ const App = () => {
     pickup_peel(lot["searchLot"].stages, lot["searchLot"].trace, rsts)
     pickupDispatch({type: "setLoading", payload: false})
   }
+  */
 
   const search = (searchText: string) => {
-          search_demo()
-          return
+          //search_demo()
+          //return
     setAlert({visible:false, type:"error", message:``})
     pickupDispatch({type:"clear"})
     pickupDispatch({type:"setLoading", payload: true})
@@ -66,7 +67,7 @@ const App = () => {
       (result: any) => {
         if (result.data.searchLot.result != null) {
           pickupDispatch({type:"setResult", payload: result.data.searchLot.result})
-          search_samples(result.data.searchLot.result)
+          search_samples(result.data.searchLot.result, result.data.searchLot.stages, result.data.searchLot.trace)
         } else {
           pickupDispatch({type: "setLoading", payload: false})
           setAlert({visible:true, type:"warning", message:`見つかりません。`})
@@ -80,7 +81,7 @@ const App = () => {
 
   }
 
-  const search_samples = (search_result:any) => {
+  const search_samples = (search_result:any, search_stages:any, search_trace:any) => {
     graphqlQuery(QUERY_SEARCH_REQUEST, { lot: search_result.lot },
       () => {
       },
@@ -92,7 +93,7 @@ const App = () => {
           /******/
           /* search_demo() */
           /******/
-          search_rst(result.result.resourcecd, result.result.lot, result.stages, result.trace)
+          search_rst(search_result.resourcecd, search_result.lot, search_stages, search_trace)
         }
       },  
       (error: any) => {
@@ -110,6 +111,11 @@ const App = () => {
       (result: any) => {
         const files = result.data.searchFiles
         const rsts = files.map((v:string) => v.replace(/(?:\/mnt\/)?(.*?)-(\d+).*\.csv$/, "$1-$2"))
+        console.log("LOG1")
+        console.log(stages)
+        console.log(dm)
+        console.log(rsts)
+        console.log("LOG1E")
         pickup_peel(stages, dm, rsts)
       },
       (error: any) => {
