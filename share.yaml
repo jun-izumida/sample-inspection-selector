@@ -7,72 +7,120 @@ resources:
     "3021001":
         address: 10.204.143.83
         netbios: VIP1
+        username: agel
+        password: ""
     "3021002":
         address: 10.204.143.84
         netbios: VIP2
+        username: agel
+        password: ""
     "3021003":
         address: 10.204.143.85
         netbios: VIP3
+        username: agel
+        password: ""
     "3021004":
         address: 10.204.143.86
         netbios: VIP4
+        username: agel
+        password: ""
     "3021005":
         address: 10.204.143.87
         netbios: VIP5
+        username: agel
+        password: ""
     "3021006":
         address: 10.204.143.88
         netbios: VIP6
+        username: agel
+        password: ""
     "3021007":
         address: 10.204.143.89
         netbios: VIP7
+        username: agel
+        password: ""
     "3021008":
         address: 10.204.143.90
         netbios: VIP8
+        username: agel
+        password: ""
     "3021009":
         address: 10.204.143.91
         netbios: VIP9
+        username: agel
+        password: ""
     "3021010":
         address: 10.204.143.92
         netbios: VIP10
+        username: agel
+        password: ""
     "3021011":
         address: 10.204.143.93
         netbios: VIP11
+        username: agel
+        password: ""
     "3021012":
         address: 10.204.143.94
         netbios: VIP12
+        username: agel
+        password: "12"
     "3021013":
         address: 10.204.143.95
         netbios: VIP13
+        username: agel
+        password: ""
     "3021014":
         address: 10.204.143.96
         netbios: VIP14
+        username: agel
+        password: ""
     "3021015":
         address: 10.204.143.97
         netbios: VIP15
+        username: agel
+        password: ""
     "3021016":
         address: 10.204.143.98
         netbios: VIP16
+        username: agel
+        password: ""
     "3021017":
         address: 10.204.143.99
         netbios: VIP17
+        username: agel
+        password: ""
     "3021018":
         address: 10.204.143.100
         netbios: VIP18
+        username: agel
+        password: ""
     "3021019":
         address: 10.204.143.101
         netbios: VIP19
+        username: agel
+        password: ""
     "3021020":
         address: 10.204.143.102
         netbios: VIP20
+        username: agel
+        password: ""
     "3021021":
         address: 10.204.143.103
         netbios: VIP21
+        username: agel
+        password: ""
     "3021022":
         address: 10.204.143.104
         netbios: VIP22
+        username: agel
+        password: ""
     "3021023":
         address: 10.204.143.105
         netbios: VIP23
+        username: agel
+        password: ""
     "3021024":
         address: 10.204.143.106
         netbios: VIP24
+        username: agel
+        password: ""
