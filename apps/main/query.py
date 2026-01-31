@@ -36,14 +36,15 @@ class Query:
             host["search_path"] if "search_path" in host else file_search_config["common"]["search_path"]
             )
         matched = list(filter(lambda x: x.startswith(prefix) and x.endswith("rst.csv"), files))
-        return matched
+        formatted = [re.sub(r'(\d+)rst', lambda m: f"{int(m.group(1)):02d}rst", name) for name in matched]
+        return formatted
 
     @strawberry.field
     def search_lot(self, lot:str) -> SearchLotType:
         r = requests.get(f"{settings.EXTERNAL_API_ENDPOINT}{settings.EXTERNAL_API_URL_EPR}", params={"lot": lot, "is_ring_lot": 1})
         data = r.json()["data"]
-        #result = list(filter(lambda x: x["proccd"] == "CBF320500", data))
-        result = list(filter(lambda x: x["proccd"] == "CBF320100", data))
+        result = list(filter(lambda x: x["proccd"] == "CBF320500", data))
+        #result = list(filter(lambda x: x["proccd"] == "CBF320100", data))
         if len(result) > 0:
             result = ResultType(
                 product=result[0]["product"],
@@ -65,8 +66,8 @@ class Query:
 
         stages = None
         if not result is None:
-            #r = requests.get(f"{settings.EXTERNAL_API_ENDPOINT}{settings.EXTERNAL_API_URL_TRACE}", params={"coatlot":  result.coatlot})
-            r = requests.get(f"{'http://127.0.0.1:8000'}{settings.EXTERNAL_API_URL_TRACE}", params={"coatlot":  result.coatlot})
+            r = requests.get(f"{settings.EXTERNAL_API_ENDPOINT}{settings.EXTERNAL_API_URL_TRACE}", params={"coatlot":  result.coatlot})
+            #r = requests.get(f"{'http://127.0.0.1:8000'}{settings.EXTERNAL_API_URL_TRACE}", params={"coatlot":  result.coatlot})
             print(result.coatlot)
             trace = list(map(lambda x: TraceType(
                 dm_lot=x["lot"],
@@ -113,6 +114,8 @@ class Query:
                 is_validate = y["is_validate"],
                 is_pass = y["is_pass"],
             ),x["lots"]))), item["peelSamples"])),
+            is_request=item["is_request"] if "is_request" in item else None,
+            is_complete=item["is_complete"] if "is_complete" in item else None,
         )
         return response
 
@@ -141,5 +144,7 @@ class Query:
                 is_validate = y["is_validate"],
                 is_pass = y["is_pass"],
             ),x["lots"]))), item["peelSamples"])),
+            is_request=item["is_request"] if "is_request" in item else None,
+            is_complete=item["is_complete"] if "is_complete" in item else None,
         )
         return response

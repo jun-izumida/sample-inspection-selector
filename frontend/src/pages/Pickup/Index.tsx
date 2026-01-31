@@ -26,7 +26,7 @@ const PickUpAppProvider = ({ children }: { children?: ReactNode; }) => {
 const Index = () => {
   return (
     <PickUpAppProvider>
-      <App />
+      <PickUpApp />
     </PickUpAppProvider>
   )
 }
@@ -37,7 +37,7 @@ type AlertType = {
   message: string
 }
 
-const App = () => {
+const PickUpApp = () => {
   const { appDispatch } = useContext(AppContext)
   const { pickupState, pickupDispatch } = useContext(PickUpContext)
   const [operationResult ] = useState<any>(null)
@@ -86,8 +86,8 @@ const App = () => {
       () => {
       },
       (result: any) => {
-        if (result.data.searchSamples != null) {
-          pickupDispatch({type:"setSearchSamples", payload: result.data.searchSamples})
+        if (result.data.searchInspectionSampleRequest != null) {
+          pickupDispatch({type:"setSearchSamples", payload: result.data.searchInspectionSampleRequest})
           pickupDispatch({type: "setLoading", payload: false})
         } else {
           /******/
@@ -110,12 +110,7 @@ const App = () => {
       },
       (result: any) => {
         const files = result.data.searchFiles
-        const rsts = files.map((v:string) => v.replace(/(?:\/mnt\/)?(.*?)-(\d+).*\.csv$/, "$1-$2"))
-        console.log("LOG1")
-        console.log(stages)
-        console.log(dm)
-        console.log(rsts)
-        console.log("LOG1E")
+        const rsts = files.map((v:string) => v.replace(/(?:\/mnt\/)?(.*?)-(\d+).*\.csv$/, "$1-$2")).sort()
         pickup_peel(stages, dm, rsts)
       },
       (error: any) => {
