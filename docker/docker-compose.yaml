@@ -43,7 +43,7 @@ services:
       - "traefik.http.routers.${TRAEFIK_ROUTER}-backend-${CONTAINER_NAME_SUFFIX}.entrypoints=${TRAEFIK_ENTRYPOINT}"
       #- "traefik.docker.network=${NETWORK}"
     networks:
-      - app
+      - Prd
     restart: unless-stopped
   sample_inspection_app:
     image: ${NGINX_IMAGE}
@@ -66,9 +66,10 @@ services:
     depends_on:
       - sample_inspection_app
     networks:
-      - app
+      - Prd
     restart: unless-stopped
 networks:
-  app:
+  Prd:
+    external: true
 volumes:
   staticfiles:

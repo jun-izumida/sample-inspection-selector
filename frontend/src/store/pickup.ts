@@ -74,6 +74,7 @@ export const PickUpReducer = (state:PickUpState, action:PickUpAction) => {
             next.isRegistered = true
             next.result = action.payload.resulw
             next.stages = action.payload.stages
+            next.stageCount = null
             next.pickUpItem = action.payload.crossSectionSamples.map((v:any, i:number) => {
                 return {
                     sequence: i,

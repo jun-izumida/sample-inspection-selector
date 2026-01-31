@@ -39,11 +39,11 @@ export const Submit = ({ children, dialogTitle, dialogContent, handleSubmit }: S
 
 
     return (
-        <Box className="submit-form" sx={{ backgroundColor: 'primary.main', zIndex:2 }}>
+        <Box className="submit-form" sx={{ backgroundColor: 'primary.main', zIndex:2, textAlign: 'center'}}>
             {children != undefined ? 
                 children
             :
-            <Button className="submit" variant="contained" onClick={handleClickOpen}>登録</Button>
+            <Button className="submit" variant="contained" sx={{position: 'absolute', top: '50%', left: '10px', transform: 'translate(0%, -50%)'}} onClick={handleClickOpen}>登録</Button>
             }
             <Dialog
                 open={open}

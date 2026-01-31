@@ -9,7 +9,7 @@ import { MUTATION_REQUEST, QUERY_SEARCH_LOT, QUERY_SEARCH_RST, QUERY_SEARCH_REQU
 import SampleRings from "./SampleRings"
 import { PickUpContext, PickUpInitialState, PickUpReducer } from '../../store/pickup'
 import { Loading } from '../../components/Loading'
-import { Submit } from '../../components/Submit'
+import { Submit } from './Submit'
 //import { DEMO_SEARCH_FILES, DEMO_SEARCH_LOT } from '../../demo'
 import { AppContext } from '../../store/app'
 
@@ -125,7 +125,6 @@ const PickUpApp = () => {
     const temp_pickups: { [key: string]: any } = {}
     
     pickupDispatch({type: "setStages", payload: stages})
-
     const rings = dm.filter((v:any) => rst.includes(v.dmLot) && !picked.includes(v.dmLot))
     const stage_count = (stages.map((v:number) => { return {stage: v, count: rings.filter((w:any) => w.dmStage == String(v)).length}})).sort((a:any, b:any) => a.count - b.count);
 
@@ -211,11 +210,12 @@ const PickUpApp = () => {
         {isSearched && operationResult == null ? <Alert severity="warning">対象ロットが見つかりませんでした。</Alert> : null}
         <Info />
         <hr />
-        <Selection />
+        {/*<!-- <Selection /> -->*/}
         <hr />
         <SampleRings />
       </Box>
-      { pickupState.pickUpItem.filter((v:any) => v.selectItem != "" && v.selectItem == v.validateItem).length >= 3 ?
+      { /*pickupState.pickUpItem.filter((v:any) => v.selectItem != "" && v.selectItem == v.validateItem).length >= 3*/
+      pickupState.pickUpItem != null && pickupState.pickUpItem.length > 0 && pickupState.pickUpPeelSamples != null && Object.keys(pickupState.pickUpPeelSamples).length > 0 ?
       <Submit handleSubmit={mutationPickup}>
         {pickupState.isRegistered ? 
         <Box sx={{height: '100%', width: '100%'}}>
@@ -223,7 +223,7 @@ const PickUpApp = () => {
             <Grid item xs={4}>
               <Button variant="contained" sx={{position: 'absolute', top: '50%', left: '10px', transform: 'translate(0%, -50%)'}}>編集</Button>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={4} sx={{textAlign: 'center', verticalAlign: 'middle', top: '50%', transform: 'translate(0%, 30%)'}}>
               <Button className="submit" variant="contained" disabled sx={{backgroundColor: 'initial !important', color: 'white !important'}}>登録済み</Button>
             </Grid>
             <Grid item xs={4}>
