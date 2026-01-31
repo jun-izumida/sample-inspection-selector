@@ -10,6 +10,24 @@ import io
 import requests
 import yaml
 import re
+import smb
+from smbclient import register_session
+from smbprotocol.connection import Connection,Dialects
+from smbprotocol.session import Session
+from smbprotocol.tree import TreeConnect
+from smbprotocol.open import (
+    CreateDisposition,
+    CreateOptions,
+    DirectoryAccessMask,
+    FileAttributes,
+    FileInformationClass,
+    FilePipePrinterAccessMask,
+    ImpersonationLevel,
+    Open,
+    ShareAccess,
+)
+from smbprotocol.file_info import FileInformationClass
+import uuid
 from pymongo import MongoClient
 from .common import *
 from .types import *
@@ -25,18 +43,43 @@ class Query:
             return None
         host = file_search_config["resources"][machine_code]
 
-        c = SMBCtl(
-            host["username"] if "username" in host else file_search_config["common"]["username"], 
-            host["password"] if "password" in host else file_search_config["common"]["password"], 
-            host["netbios"], 
-            host["address"], 
-            139)
-        files = c.file_list(
-            host["share_name"] if "share_name" in host else file_search_config["common"]["share_name"], 
-            host["search_path"] if "search_path" in host else file_search_config["common"]["search_path"]
-            )
-        matched = list(filter(lambda x: x.startswith(prefix) and x.endswith("rst.csv"), files))
-        formatted = [re.sub(r'(\d+)rst', lambda m: f"{int(m.group(1)):02d}rst", name) for name in matched]
+        username = host.get("username", file_search_config["common"]["username"])
+        password = host.get("password", file_search_config["common"]["password"])
+        server = str(host["address"])
+        share_name = host.get("share_name", file_search_config["common"]["share_name"])
+        search_path = host.get("search_path", file_search_config["common"]["search_path"])
+
+        formatted = None
+        try:
+            c = SMBCtl(
+                host["username"] if "username" in host else file_search_config["common"]["username"], 
+                host["password"] if "password" in host else file_search_config["common"]["password"], 
+                host["netbios"], 
+                host["address"], 
+                139)
+            files = c.file_list(
+                host["share_name"] if "share_name" in host else file_search_config["common"]["share_name"], 
+                host["search_path"] if "search_path" in host else file_search_config["common"]["search_path"]
+                )
+            matched = list(filter(lambda x: x.startswith(prefix) and x.endswith("rst.csv"), files))
+            formatted = [re.sub(r'(\d+)rst', lambda m: f"{int(m.group(1)):02d}rst", name) for name in matched]
+        except Exception as e:
+        #except (smb.base.NotConnectedError, ConnectionResetError) as sbnce:
+            c = SMBProtocolCtl(
+                host["username"] if "username" in host else file_search_config["common"]["username"], 
+                host["password"] if "password" in host else file_search_config["common"]["password"], 
+                host["netbios"], 
+                host["address"], 
+                445)
+            files = c.file_list(
+                host["share_name"] if "share_name" in host else file_search_config["common"]["share_name"], 
+                host["search_path"] if "search_path" in host else file_search_config["common"]["search_path"]
+                )
+            matched = list(filter(lambda x: x.startswith(prefix) and x.endswith("rst.csv"), files))
+            formatted = [re.sub(r'(\d+)rst', lambda m: f"{int(m.group(1)):02d}rst", name) for name in matched]
+        #    raise sbnce
+        #except Exception as e:
+        #    raise e
         return formatted
 
     @strawberry.field
@@ -68,7 +111,6 @@ class Query:
         if not result is None:
             r = requests.get(f"{settings.EXTERNAL_API_ENDPOINT}{settings.EXTERNAL_API_URL_TRACE}", params={"coatlot":  result.coatlot})
             #r = requests.get(f"{'http://127.0.0.1:8000'}{settings.EXTERNAL_API_URL_TRACE}", params={"coatlot":  result.coatlot})
-            print(result.coatlot)
             trace = list(map(lambda x: TraceType(
                 dm_lot=x["lot"],
                 dm_stage=x["dm_stage"],
@@ -77,7 +119,6 @@ class Query:
                 ring=x["ring"],
                 sequence=x["sequence"],
             ), r.json()))
-            print(trace)
             stages = sorted(set(list(map(lambda x: x.dm_stage, trace))))
         else:
             trace = None

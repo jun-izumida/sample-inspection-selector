@@ -3,11 +3,13 @@ asgiref==3.8.1
 billiard==4.2.0
 celery==5.4.0
 certifi==2024.8.30
+cffi==2.0.0
 charset-normalizer==3.3.2
 click==8.1.7
 click-didyoumean==0.3.1
 click-plugins==1.1.1
 click-repl==0.3.0
+cryptography==46.0.3
 Django==5.1
 django-cors-headers==4.4.0
 django-debug-toolbar==4.4.6
@@ -24,14 +26,17 @@ pip==24.0
 prompt_toolkit==3.0.47
 psycopg2-binary==2.9.9
 pyasn1==0.6.0
+pycparser==2.23
 pymongo==4.8.0
 pysmb==1.2.9.1
+pyspnego==0.12.0
 python-dateutil==2.9.0.post0
 PyYAML==6.0.2
 redis==5.0.8
 requests==2.32.3
 setuptools==69.1.0
 six==1.16.0
+smbprotocol==1.15.0
 sqlparse==0.5.1
 strawberry-graphql==0.237.3
 strawberry-graphql-django==0.47.1
@@ -42,3 +47,4 @@ urllib3==2.2.3
 uvicorn==0.30.6
 vine==5.1.0
 wcwidth==0.2.13
+wheel==0.45.1
