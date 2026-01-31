@@ -52,9 +52,11 @@ const PickUpApp = () => {
     pickup_peel(lot["searchLot"].stages, lot["searchLot"].trace, rsts)
     pickupDispatch({type: "setLoading", payload: false})
   }
-    */
+  */
 
   const search = (searchText: string) => {
+          //search_demo()
+          //return
     setAlert({visible:false, type:"error", message:``})
     pickupDispatch({type:"clear"})
     pickupDispatch({type:"setLoading", payload: true})
@@ -79,7 +81,7 @@ const PickUpApp = () => {
 
   }
 
-  const search_samples = (search_result:any, search_stages: any, search_trace:any) => {
+  const search_samples = (search_result:any, search_stages:any, search_trace:any) => {
     graphqlQuery(QUERY_SEARCH_REQUEST, { lot: search_result.lot },
       () => {
       },
@@ -123,7 +125,6 @@ const PickUpApp = () => {
     const temp_pickups: { [key: string]: any } = {}
     
     pickupDispatch({type: "setStages", payload: stages})
-
     const rings = dm.filter((v:any) => rst.includes(v.dmLot) && !picked.includes(v.dmLot))
     const stage_count = (stages.map((v:number) => { return {stage: v, count: rings.filter((w:any) => w.dmStage == String(v)).length}})).sort((a:any, b:any) => a.count - b.count);
 
@@ -209,11 +210,12 @@ const PickUpApp = () => {
         {isSearched && operationResult == null ? <Alert severity="warning">対象ロットが見つかりませんでした。</Alert> : null}
         <Info />
         <hr />
-        <Selection />
+        {/*<!-- <Selection /> -->*/}
         <hr />
         <SampleRings />
       </Box>
-      { pickupState.pickUpItem.filter((v:any) => v.selectItem != "" && v.selectItem == v.validateItem).length >= 3 ?
+      { /*pickupState.pickUpItem.filter((v:any) => v.selectItem != "" && v.selectItem == v.validateItem).length >= 3*/
+      pickupState.pickUpItem != null && pickupState.pickUpItem.length > 0 && pickupState.pickUpPeelSamples != null && Object.keys(pickupState.pickUpPeelSamples).length > 0 ?
       <Submit handleSubmit={mutationPickup}>
         {pickupState.isRegistered ? 
         <Box sx={{height: '100%', width: '100%'}}>
@@ -221,7 +223,7 @@ const PickUpApp = () => {
             <Grid item xs={4}>
               <Button variant="contained" sx={{position: 'absolute', top: '50%', left: '10px', transform: 'translate(0%, -50%)'}}>編集</Button>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={4} sx={{textAlign: 'center', verticalAlign: 'middle', top: '50%', transform: 'translate(0%, 30%)'}}>
               <Button className="submit" variant="contained" disabled sx={{backgroundColor: 'initial !important', color: 'white !important'}}>登録済み</Button>
             </Grid>
             <Grid item xs={4}>
