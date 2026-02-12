@@ -45,7 +45,7 @@ services:
     networks:
       - Prd
     restart: unless-stopped
-  sample_inspection_app:
+  sample_inspection_web:
     image: ${NGINX_IMAGE}
     container_name: sample_inspection_web_service_${CONTAINER_NAME_SUFFIX}
     environment:
