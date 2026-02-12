@@ -16,8 +16,10 @@ from smbprotocol.open import (
         ShareAccess,
         )
 from smbprotocol.file_info import FileInformationClass,FileDirectoryInformation
+from smbprotocol.exceptions import SMBResponseException
 import uuid
 
+STATUS_NO_MORE_FILES = 0x80000006
 
 class SMBCtl():
     def __init__(self, user, password, NetBIOS_name, remote_host, remote_port):
@@ -77,13 +79,28 @@ class SMBProtocolCtl():
         tree.connect()
         dir_handle = Open(tree, self.unix_to_smb_path(directory))
         dir_handle.create(
-                #desired_access=0x00000001,  # GENERIC_READ
-                desired_access=0x001200A9,  # FILE_READ_ATTRIBUTES | FILE_LIST_DIRECTORY
+                desired_access=0x00000001,
                 file_attributes=FileAttributes.FILE_ATTRIBUTE_DIRECTORY,
-                share_access=ShareAccess.FILE_SHARE_READ,
+                share_access=(
+                    ShareAccess.FILE_SHARE_READ |
+                    ShareAccess.FILE_SHARE_WRITE |
+                    ShareAccess.FILE_SHARE_DELETE
+                    ),
                 create_disposition=CreateDisposition.FILE_OPEN,
                 create_options=CreateOptions.FILE_DIRECTORY_FILE,
                 impersonation_level=ImpersonationLevel.Impersonation,
                 )
-        files = dir_handle.query_directory("*", 0x01)
+
+        files = []
+
+        while True:
+            try:
+                entries = dir_handle.query_directory("*", 0x01)
+            except SMBResponseException as e:
+                if e.status == STATUS_NO_MORE_FILES:
+                    break
+                raise
+            files = [*files, *entries]
+        dir_handle.close()
+        tree.disconnect()
         return list(map(lambda x: x["file_name"].get_value().decode("utf-16-le"), files))
